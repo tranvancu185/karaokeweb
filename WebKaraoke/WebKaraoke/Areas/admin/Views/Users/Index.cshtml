@@ -1,0 +1,50 @@
+﻿@model IEnumerable<WebKaraoke.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý quyền truy cập";
+    Layout = "~/Areas/admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Danh sách quyền truy cập</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#ID</th>
+                <th scope="col">Username</th>
+                <th scope="col">Họ tên</th>
+                <th scope="col">Role</th>
+                <th scope="col" class="colActive">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+             {
+                @foreach (var item in Model)
+                 {
+                    <tr>
+                        <th scope="row">@item.Id</th>
+                        <td>
+                            @item.Username
+                        </td>
+                        <td>
+                            @item.Hoten
+                        </td>
+                        <td>
+                            @item.Role
+                        </td>
+                        <td class="colActive">
+                            <a class="btn btn-success btn-tone m-r-5 " asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a class="btn btn-primary btn-tone m-r-5 " asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a class="btn btn-danger btn-tone m-r-5 " asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                 }
+             }
+        </tbody>
+    </table>
+</div>
