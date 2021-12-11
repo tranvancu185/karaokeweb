@@ -15,15 +15,15 @@ create table users(
 create table customer(
 	id int Identity(1,1) primary key,
 	hoten nvarchar(50),
-	email varchar(50),
 	phone char(11),
-	username char(20),
+	username char(20) unique,
 	password char(20)
 )
 
 create table room(
 	id int Identity(1,1) primary key,
 	name nvarchar(40),
+	status int default 0,
 	price float,
 	typeRoom int
 )
@@ -39,6 +39,11 @@ create table food(
 create table bill(
 	id int Identity(1,1) primary key,
 	createAt DateTime,
+	dateBook DateTime,
+	checkIn time,
+	checkOut time,
+	total float default null,
+	status int default 0,
 	idFood int,
 	idRoom int,
 	idCus int,
@@ -47,24 +52,42 @@ create table bill(
 	CONSTRAINT FK_bill_cus FOREIGN KEY (idCus)REFERENCES customer(id)
 )
 
+create table billDetail(
+	idFood int,
+	idBill int,
+	quantuty int,
+	CONSTRAINT FK_billdetail_food FOREIGN KEY (idFood)REFERENCES food(id),
+	CONSTRAINT FK_billdetail_bill FOREIGN KEY (idBill)REFERENCES bill(id),
+)
+
 insert into users values('admin','admin','0','admin','admin'),
 ('NV1',N'Phạm Duy Thái','2','paduta','paduta'),
 ('KT1',N'Trần Phú Quý','1','quy123','quy123')
 
 
-
-insert into customer values('ABC','abc@gmail.com','091231233','abc123','abc123')
-
-
-insert into room values('Phong 1',60000,1),('Phong 2',35000,3),('Phong 3',40000,2),('Phong 4',60000,1),('Phong 5',40000,2)
+insert into customer values('ABC','091231233','abc123','abc123')
 
 
-insert into food values(N'Cá Chưng',250000,20),('Phong 2',550000,20),('Phong 3',120000,20),('Phong 4',350000,20),('Phong 5',300000,20)
+insert into room values('Phong 1',0,60000,1),
+('Phong 2',0,35000,3),
+('Phong 3',0,40000,2),
+('Phong 4',0,60000,1),
+('Phong 5',0,40000,2),
+('Phong 6',1,40000,2)
 
 
+insert into food values(N'Cá Chưng',250000,20),
+(N'Bia',35000,100),
+('StrongBow',32000,132),
+('Coca',25000,200),
+('Snack',20000,100)
 
 
+insert into bill values('13-07-2021','15-07-2021','12:00:00','15:00:00',0,0,1,1,1),
+('22-07-2021','25-07-2021','12:00:00','15:00:00',0,0,3,1,1)
 
+insert into billDetail values(1,1,3)
+insert into billDetail values(2,1,10)
 
 
 
