@@ -4,44 +4,56 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Areas/admin/Views/Shared/_AdminLayout.cshtml";
 }
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">SỬA NHÂN VIÊN</h1>
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
 
-<h1>Edit</h1>
-
-<h4>User</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Hoten" class="control-label"></label>
-                <input asp-for="Hoten" class="form-control" />
-                <span asp-validation-for="Hoten" class="text-danger"></span>
+            <div class="media align-items-center m-b-15">
+                <div class="avatar avatar-image rounded" style="height: 70px; width: 70px">
+                    <img src="assets/images/others/thumb-16.jpg" alt="">
+                </div>
+                <div class="m-l-15">
+                    <h4 class="m-b-0">@Model.Hoten</h4>
+                    <p class="text-muted m-b-0">Code: #@Model.Id</p>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
-                <input asp-for="Role" class="form-control" />
-                <span asp-validation-for="Role" class="text-danger"></span>
+            <div class="m-b-15">
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id"><i class="anticon anticon-edit"></i>Details</a>
             </div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="text-center"></h1>
+            <div class="table-responsive">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label class="control-label">Họ tên</label>
+                        <input asp-for="Hoten" class="form-control" />
+                        <span asp-validation-for="Hoten" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Phân quyền</label>
+                        <select asp-for="Role" class="form-control">
+                            <option value="2">Nhân viên</option>
+                            <option value="1">Kế toán</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+    </div>
+    <hr />
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 

@@ -173,11 +173,9 @@
                 </div>
             </div>
             <!-- Header END -->
-
             <!-- Side Nav START -->
-            @await Html.PartialAsync("_SideNavPartialView.cshtml") 
+            @await Html.PartialAsync("_SideNavPartialView.cshtml")
             <!-- Side Nav END -->
-
             <!-- Page Container START -->
             <div class="page-container">
 
@@ -186,7 +184,6 @@
                     @RenderBody()
                 </div>
                 <!-- Content Wrapper END -->
-
                 <!-- Footer START -->
                 <footer class="footer">
                     <div class="footer-content">
@@ -205,6 +202,8 @@
         </div>
     </div>
 
+    <!-- main JS -->
+    <script src="~/AdminAssets/js/main.js"></script>
 
     <!-- Core Vendors JS -->
     <script src="~/AdminAssets/js/vendors.min.js"></script>

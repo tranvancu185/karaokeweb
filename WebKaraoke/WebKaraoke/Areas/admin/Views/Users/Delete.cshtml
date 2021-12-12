@@ -4,43 +4,46 @@
     ViewData["Title"] = "Delete";
     Layout = "~/Areas/admin/Views/Shared/_AdminLayout.cshtml";
 }
-
-<h1>Delete</h1>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hoten)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hoten)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Role)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Role)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">XÓA NHÂN VIÊN</h1>
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Hoten</h4>
+                    <div class="table-responsive">
+                        <table class="product-info-table m-t-20">
+                            <tbody>
+                                <tr>
+                                    <td>Họ tên:</td>
+                                    <td class="text-dark font-weight-semibold">@Model.Hoten</td>
+                                </tr>
+                                <tr>
+                                    <td>Phân quyền::</td>
+                                    @if (Model.Role == 1)
+                                    {
+                                        <td>Kế toán</td>
+                                    }
+                                    @if (Model.Role == 2)
+                                    {
+                                        <td>Nhân viên</td>
+                                    }
+                                </tr>
+                                <tr>
+                                    <td>Username:</td>
+                                    <td>@Model.Username</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        </form>
+    </div>
 </div>
