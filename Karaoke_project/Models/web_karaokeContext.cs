@@ -198,6 +198,10 @@ namespace Karaoke_project.Models
                     .HasColumnName("id")
                     .IsFixedLength(true);
 
+                entity.Property(e => e.Avatar)
+                    .HasMaxLength(100)
+                    .HasColumnName("avatar");
+
                 entity.Property(e => e.Hoten)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -209,9 +213,7 @@ namespace Karaoke_project.Models
                     .HasColumnName("password")
                     .IsFixedLength(true);
 
-                entity.Property(e => e.Role)
-                    .HasColumnName("role")
-                    .HasDefaultValueSql("((0))");
+                entity.Property(e => e.Role).HasColumnName("role");
 
                 entity.Property(e => e.Username)
                     .HasMaxLength(20)

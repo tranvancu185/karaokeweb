@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Karaoke_project.Models;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -16,10 +18,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
         private readonly web_karaokeContext _context;
         public INotyfService _notyfService { get; }
 
-        public AdminUsersController(web_karaokeContext context, INotyfService notyfService)
+        private readonly IWebHostEnvironment _hostEnvironment;
+
+        public AdminUsersController(web_karaokeContext context, INotyfService notyfService, IWebHostEnvironment hostEnviroment)
         {
             _context = context;
             _notyfService = notyfService;
+            this._hostEnvironment = hostEnviroment;
         }
 
         // GET: Admin/AdminUsers
@@ -60,10 +65,20 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Hoten,Role,Username,Password")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Hoten,Role,Username,Password,ImageFile")] User user)
         {
             if (ModelState.IsValid)
             {
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                string extension = Path.GetExtension(user.ImageFile.FileName);
+                user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await user.ImageFile.CopyToAsync(fileStream);
+                }
+
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Tạo mới thành công!");
@@ -95,7 +110,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Hoten,Role,Username,Password")] User user)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Hoten,Role,ImageFile")] User user)
         {
             if (id != user.Id)
             {
@@ -106,8 +121,32 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 try
                 {
+                    if (user.ImageFile == null )
+                    {
+
+                    }
+                    else
+                    {
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                        string extension = Path.GetExtension(user.ImageFile.FileName);
+                        user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                        string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await user.ImageFile.CopyToAsync(fileStream);
+                        }
+                    }
+
+
+                    User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                    user.Avatar =  imageModel.Avatar;
+                    user.Username = imageModel.Username;
+                    user.Password = imageModel.Password;
+
                     _context.Update(user);
                     await _context.SaveChangesAsync();
+                    _context.ChangeTracker.Clear();
                     _notyfService.Success("Cập nhật thành công!");
                 }
                 catch (DbUpdateConcurrencyException)
@@ -152,6 +191,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            var imageModel = await _context.Users.FindAsync(id);
+            //delete image
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image/avatar", imageModel.Avatar);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
             var user = await _context.Users.FindAsync(id);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -163,5 +209,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
         {
             return _context.Users.Any(e => e.Id == id);
         }
+
+        public async Task<User> GetValue(string id)
+        {
+            User User = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return User;
+        }
     }
+
+    
 }

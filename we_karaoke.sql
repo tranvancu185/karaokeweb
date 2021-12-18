@@ -8,11 +8,13 @@ create table users(
 	id char(20) primary key NOT Null,
 	hoten nvarchar(50) NOT NULL,
 	role int,
+	avatar nvarchar(100),
 	username char(20),
 	password char(10)
 	CONSTRAINT FK_user_role FOREIGN KEY (role)REFERENCES role(id)
 )
 
+drop table users
 
 create table customer(
 	id int Identity(1,1) primary key,
@@ -73,9 +75,9 @@ create table role(
 
 insert into role values('admin'),(N'Kế toán'),(N'Nhân viên'),(N'Quản lý')
 
-insert into users values('admin','admin','1','admin','admin'),
-('NV1',N'Phạm Duy Thái','3','paduta','paduta'),
-('KT1',N'Trần Phú Quý','2','quy123','quy123')
+insert into users values('admin','admin','1','~/AdminAssets/images/avatars/thumb-3.jpg','admin','admin'),
+('NV1',N'Phạm Duy Thái','3','~/AdminAssets/images/avatars/thumb-3.jpg','paduta','paduta'),
+('KT1',N'Trần Phú Quý','2','~/AdminAssets/images/avatars/thumb-3.jpg','quy123','quy123')
 
 
 insert into customer values('ABC','091231233')

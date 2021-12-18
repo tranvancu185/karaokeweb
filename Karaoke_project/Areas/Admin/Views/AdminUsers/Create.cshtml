@@ -19,7 +19,7 @@
         <h1 class="text-center">THÊM NHÂN VIÊN</h1>
         <div class="row responsive">
             <div class="col-md-4">
-                <form asp-action="Create">
+                <form asp-action="Create" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label class="control-label">ID code</label>
@@ -48,6 +48,12 @@
                             <a onclick="showPwd()"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                         </div>
                         <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ImageFile" class="control-label"></label></br>
+                        <img id="profile-image1" src="~/AdminAssets/images/avatars/thumb-1.jpg" alt="">
+                        <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden" type="file" onchange="previewFile()">
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-primary" />

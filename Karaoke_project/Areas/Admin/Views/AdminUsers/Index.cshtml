@@ -23,6 +23,7 @@
                 <thead>
                     <tr>
                         <th scope="col">#ID</th>
+                        <th scope="col">Avatar</th>
                         <th scope="col">Username</th>
                         <th scope="col">Họ tên</th>
                         <th scope="col">Role</th>
@@ -38,6 +39,11 @@
                             {
                                 <tr>
                                     <th scope="row">@item.Id</th>
+                                    <td>
+                                        <div class="avatar avatar-image rounded" style="height: 40px; width: 40px">
+                                            <img src="~/image/avatar/@item.Avatar" alt="">
+                                        </div>
+                                    </td>
                                     <td>
                                         @item.Username
                                     </td>

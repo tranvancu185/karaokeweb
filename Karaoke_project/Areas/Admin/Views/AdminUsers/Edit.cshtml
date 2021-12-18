@@ -20,7 +20,7 @@
 
             <div class="media align-items-center m-b-15">
                 <div class="avatar avatar-image rounded" style="height: 70px; width: 70px">
-                    <img src="assets/images/others/thumb-16.jpg" alt="">
+                    <img src="~/image/avatar/@Model.Avatar" alt="">
                 </div>
                 <div class="m-l-15">
                     <h4 class="m-b-0">@Model.Hoten</h4>
@@ -36,7 +36,7 @@
         <div class="card-body">
             <h1 class="text-center"></h1>
             <div class="table-responsive">
-                <form asp-action="Edit">
+                <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     <div class="form-group">
@@ -50,17 +50,10 @@
                         <span asp-validation-for="Role" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Username" class="control-label"></label>
-                        <input asp-for="Username" disabled class="form-control" />
-                        <span asp-validation-for="Username" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Password" class="control-label"></label>
-                        <div id="show_hide_password">
-                            <input type="password" disabled asp-for="Password" class="form-control" id="pwdInput" value="@Model.Password" />
-                            <a onclick="showPwd()"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                        </div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <label class="control-label"></label>Avatar</br>
+                        <img id="profile-image1" src="~/image/avatar/@Model.Avatar"  alt="">
+                        <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden form-control-file" type="file" onchange="previewFile()">
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Save" class="btn btn-primary" /> |

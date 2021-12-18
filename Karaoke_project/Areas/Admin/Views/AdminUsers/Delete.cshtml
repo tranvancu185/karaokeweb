@@ -19,7 +19,12 @@
         <div class="d-md-flex m-b-15 align-items-center justify-content-between">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">@Model.Hoten</h4>
+                    <h4 class="card-title">
+                        <div class="avatar avatar-image rounded" style="height: 60px; width: 60px">
+                            <img src="~/image/avatar/@Model.Avatar" alt="">
+                        </div>&emsp;
+                        @Model.Hoten
+                    </h4>
                     <div class="table-responsive">
                         <table class="product-info-table m-t-20">
                             <tbody>
