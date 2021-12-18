@@ -1,0 +1,73 @@
+﻿@model Karaoke_project.Models.User
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý quyền truy cập</a>
+            <span class="breadcrumb-item active">Cập nhật nhân viên</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">CẬP NHẬT NHÂN VIÊN</h1>
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+
+            <div class="media align-items-center m-b-15">
+                <div class="avatar avatar-image rounded" style="height: 70px; width: 70px">
+                    <img src="assets/images/others/thumb-16.jpg" alt="">
+                </div>
+                <div class="m-l-15">
+                    <h4 class="m-b-0">@Model.Hoten</h4>
+                    <p class="text-muted m-b-0">Code: #@Model.Id</p>
+                </div>
+            </div>
+            <div class="m-b-15">
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id"><i class="anticon anticon-edit"></i>Details</a>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="text-center"></h1>
+            <div class="table-responsive">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label class="control-label">Họ tên</label>
+                        <input asp-for="Hoten" class="form-control" />
+                        <span asp-validation-for="Hoten" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Phân quyền</label>
+                        <select asp-for="Role" class="form-control" asp-items="ViewBag.Role"></select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Username" class="control-label"></label>
+                        <input asp-for="Username" disabled class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <div id="show_hide_password">
+                            <input type="password" disabled asp-for="Password" class="form-control" id="pwdInput" value="@Model.Password" />
+                            <a onclick="showPwd()"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" /> |
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

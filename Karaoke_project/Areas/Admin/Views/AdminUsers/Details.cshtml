@@ -1,0 +1,75 @@
+﻿@model Karaoke_project.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý quyền truy cập</a>
+            <span class="breadcrumb-item active">Xem chi tiết nhân viên</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">CHI TIẾT NHÂN VIÊN</h1>
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+
+            <div class="media align-items-center m-b-15">
+                <div class="avatar avatar-image rounded" style="height: 70px; width: 70px">
+                    <img src="assets/images/others/thumb-16.jpg" alt="">
+                </div>
+                <div class="m-l-15">
+                    <h4 class="m-b-0">@Model.Hoten</h4>
+                    <p class="text-muted m-b-0">Code: #@Model.Id</p>
+                </div>
+            </div>
+            <div class="m-b-15">
+                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id"><i class="anticon anticon-edit"></i>Edit</a>
+            </div>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#product-overview">Overview</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Basic Info</h4>
+            <div class="table-responsive">
+                <table class="product-info-table m-t-20">
+                    <tbody>
+                        <tr>
+                            <td>Họ tên:</td>
+                            <td class="text-dark font-weight-semibold">@Model.Hoten</td>
+                        </tr>
+                        <tr>
+                            <td>Phân quyền::</td>
+                            @if (Model.Role == 1)
+                            {
+                                <td>Kế toán</td>
+                            }
+                            @if (Model.Role == 2)
+                            {
+                                <td>Nhân viên</td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>Username:</td>
+                            <td>@Model.Username</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

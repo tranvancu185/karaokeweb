@@ -1,0 +1,45 @@
+﻿@model Karaoke_project.Models.Category
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý loại món ăn</a>
+            <span class="breadcrumb-item active">Xóa loại món ăn</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">XÓA NHÂN VIÊN</h1>
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Name</h4>
+                    <div class="table-responsive">
+                        <table class="product-info-table m-t-20">
+                            <tbody>
+                                <tr>
+                                    <td>Tên phòng:</td>
+                                    <td class="text-dark font-weight-semibold">@Model.Name</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </form>
+        </br>
+    </div>
+</div>

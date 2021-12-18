@@ -1,0 +1,65 @@
+﻿@model Karaoke_project.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý quyền truy cập</a>
+            <span class="breadcrumb-item active">Thêm nhân viên</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">THÊM NHÂN VIÊN</h1>
+        <div class="row responsive">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label class="control-label">ID code</label>
+                        <input asp-for="Id" class="form-control" />
+                        <span asp-validation-for="Id" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Họ tên</label>
+                        <input asp-for="Hoten" class="form-control" />
+                        <span asp-validation-for="Hoten" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Phân quyền</label>
+                        <select asp-for="Role" class="form-control" asp-items="ViewBag.Role"></select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Username" class="control-label"></label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <div id="show_hide_password">
+                            <input type="password" asp-for="Password" class="form-control" id="pwdInput" />
+                            <a onclick="showPwd()"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+

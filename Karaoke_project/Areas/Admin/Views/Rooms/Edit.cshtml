@@ -1,0 +1,52 @@
+﻿@model Karaoke_project.Models.Room
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý phòng Karaoke</a>
+            <span class="breadcrumb-item active">Cập nhật phòng karaoke</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="text-center">CẬP NHẬT PHÒNG KARAOKE</h1>
+            <div class="table-responsive">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label class="control-label">Tên phòng</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Giá tiền</label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Phân quyền</label>
+                        <select asp-for="TypeRoom" class="form-control">
+                            <option value="3">Phòng thường</option>
+                            <option value="2">Phòng cao cấp</option>
+                            <option value="1">Phòng Vip</option>
+                        </select>
+                        <span asp-validation-for="TypeRoom" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" /> |
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
