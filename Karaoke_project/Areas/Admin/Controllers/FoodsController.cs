@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Karaoke_project.Models;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using PagedList.Core;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -15,18 +18,26 @@ namespace Karaoke_project.Areas.Admin.Controllers
     {
         private readonly web_karaokeContext _context;
         public INotyfService _notyfService { get; }
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public FoodsController(web_karaokeContext context, INotyfService notyfService)
+
+        public FoodsController(web_karaokeContext context, INotyfService notyfService, IWebHostEnvironment hostEnviroment)
         {
             _context = context;
             _notyfService = notyfService;
+            this._hostEnvironment = hostEnviroment;
         }
 
         // GET: Admin/Foods
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int? page)
         {
-            var web_karaokeContext = _context.Foods.Include(f => f.IdCategoryNavigation);
-            return View(await web_karaokeContext.ToListAsync());
+            var pageNumber = page == null || page <= 0 ? 1 : page.Value;
+            var pageSize = 20;
+            var web_karaokeContext = _context.Foods.AsNoTracking().OrderBy(x => x.Id).Include(f => f.IdCategoryNavigation);
+            PagedList<Food> pagedList = new PagedList<Food>(web_karaokeContext, pageNumber, pageSize);
+            ViewBag.CurrentPage = pageNumber;
+            ViewData["IdCategory"] = new SelectList(_context.Categories, "Id", "Name");
+            return View(pagedList);
         }
 
         // GET: Admin/Foods/Details/5
@@ -60,10 +71,28 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Quantity,IdCategory")] Food food)
+        public async Task<IActionResult> Create([Bind("Id,Name,Price,Quantity,IdCategory,ImageFile")] Food food)
         {
             if (ModelState.IsValid)
             {
+                if(food.ImageFile != null)
+                {
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string fileName = Path.GetFileNameWithoutExtension(food.ImageFile.FileName);
+                    string extension = Path.GetExtension(food.ImageFile.FileName);
+                    food.Image = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                    string path = Path.Combine(wwwRootPath + "/image/imageFood/" + food.Image);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await food.ImageFile.CopyToAsync(fileStream);
+                    }
+                }
+                else
+                {
+                    food.Image = "thumb-1.jpg";
+                }
+                
+
                 _context.Add(food);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Tạo mới thành công!");
@@ -95,7 +124,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Quantity,IdCategory")] Food food)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Quantity,IdCategory,ImageFile")] Food food)
         {
             if (id != food.Id)
             {
@@ -107,8 +136,27 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 try
                 {
+                    Food imageModel = await _context.Foods.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+                    if (food.ImageFile == null)
+                    {
+                        food.Image = imageModel.Image;
+                    }
+                    else
+                    {
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string fileName = Path.GetFileNameWithoutExtension(food.ImageFile.FileName);
+                        string extension = Path.GetExtension(food.ImageFile.FileName);
+                        food.Image = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                        string path = Path.Combine(wwwRootPath + "/image/imageFood/" + food.Image);
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await food.ImageFile.CopyToAsync(fileStream);
+                        }
+                    }
                     _context.Update(food);
                     await _context.SaveChangesAsync();
+                    _context.ChangeTracker.Clear();
                     _notyfService.Success("Cập nhật thành công!");
                 }
                 catch (DbUpdateConcurrencyException)
@@ -153,6 +201,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var imageModel = await _context.Foods.FindAsync(id);
+            //delete image
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image/imageFood", imageModel.Image);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+
             var food = await _context.Foods.FindAsync(id);
             _context.Foods.Remove(food);
             await _context.SaveChangesAsync();

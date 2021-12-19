@@ -1,7 +1,9 @@
-﻿@model IEnumerable<Karaoke_project.Models.Food>
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<Karaoke_project.Models.Food>
 
 @{
-    ViewData["Title"] = "Index";
+    int currentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "Quản lý món ăn" + currentPage;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -9,21 +11,35 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
-            <a class="breadcrumb-item active" asp-action="Index">Quản lý món ăn</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý món ăn</a>
+            <a class="breadcrumb-item active" asp-action="Index">Danh sách món ăn : Page @currentPage</a>
         </nav>
     </div>
 </div>
-<div class="container-fluid" style="padding-top: 20px">
-    <div class="page-header no-gutters has-tab">
+
+<div class="card">
+    <div class="card-body">
         <h1 class="text-center">DANH SÁCH MÓN ĂN</h1>
         <p>
             <a asp-action="Create">Create New</a>
         </p>
+        <div class="row m-b-30">
+            <div class="col-lg-8">
+                <div class="d-md-flex">
+                    <div class="m-b-10 m-r-15">
+                        <select class="custom-select" id="idCate" name="idCate" style="min-width: 200px;" asp-items="ViewBag.IdCategory">
+                            <option value="0" disabled selected>Chọn loại món ăn</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-hover e-commerce-table">
                 <thead>
                     <tr>
                         <th scope="col">#ID</th>
+                        <th scope="col">Ảnh</th>
                         <th scope="col">Tên món ăn</th>
                         <th scope="col">Giá tiền</th>
                         <th scope="col">Số lượng</th>
@@ -39,10 +55,15 @@
                             <tr>
                                 <th scope="row">@item.Id</th>
                                 <td>
+                                    <div class="avatar avatar-image rounded" style="height: 40px; width: 40px">
+                                        <img src="~/image/imageFood/@item.Image" alt="">
+                                    </div>
+                                </td>
+                                <td>
                                     @item.Name
                                 </td>
                                 <td>
-                                    @item.Price
+                                    @item.Price.Value.ToString("#,##0") VNĐ
                                 </td>
                                 <td>
                                     @item.Quantity
@@ -60,6 +81,13 @@
                     }
                 </tbody>
             </table>
+            <div aria-label="Page navigation example" class="d-flex justify-content-end p-r-150">
+                <ul class="pagination">
+                    <pager class="pager-container text-right" list="@Model" asp-area="Admin" asp-controller="Foods" asp-action="Index" />
+                </ul>
+            </div>
         </div>
+        
     </div>
 </div>
+

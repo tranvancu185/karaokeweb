@@ -1,0 +1,36 @@
+﻿@model Karaoke_project.Models.Role
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý quyền truy cập</a>
+            <span class="breadcrumb-item active">Chi tiết quyền truy cập</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">CHI TIẾT QUYỀN TRUY CẬP</h1>
+        <table class="product-info-table m-t-20">
+            <tbody>
+                <tr>
+                    <td>Quyền truy cập:</td>
+                    <td class="text-dark font-weight-semibold">@Model.Name</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div>
+            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id"><i class="anticon anticon-edit"></i>Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+        </br>
+    </div>
+</div>

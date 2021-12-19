@@ -9,6 +9,7 @@ using Karaoke_project.Models;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using PagedList.Core;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -28,10 +29,16 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int? page)
         {
-            var web_karaokeContext = _context.Users.Include(f => f.RoleNavigation);
-            return View(await web_karaokeContext.ToListAsync());
+            var pageNumber = page == null || page <= 0 ? 1 : page.Value;
+            var pageSize = 20;
+            var web_karaokeContext = _context.Users.AsNoTracking().OrderBy(x => x.Id).Include(f => f.RoleNavigation);
+            PagedList<User> pagedList = new PagedList<User>(web_karaokeContext, pageNumber, pageSize);
+            ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name");
+            ViewBag.CurrentPage = pageNumber;
+
+            return View(pagedList);
         }
 
         // GET: Admin/AdminUsers/Details/5
@@ -69,16 +76,23 @@ namespace Karaoke_project.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _hostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
-                string extension = Path.GetExtension(user.ImageFile.FileName);
-                user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
-                string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                if (user.ImageFile != null)
                 {
-                    await user.ImageFile.CopyToAsync(fileStream);
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                    string extension = Path.GetExtension(user.ImageFile.FileName);
+                    user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                    string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(fileStream);
+                    }
                 }
-
+                else
+                {
+                    user.Avatar = "thumb-1.jpg";
+                }
+                
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Tạo mới thành công!");
@@ -121,9 +135,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 try
                 {
+                    User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+                    user.Username = imageModel.Username;
+                    user.Password = imageModel.Password;
+
                     if (user.ImageFile == null )
                     {
-
+                        user.Avatar = imageModel.Avatar;
                     }
                     else
                     {
@@ -137,13 +156,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
                             await user.ImageFile.CopyToAsync(fileStream);
                         }
                     }
-
-
-                    User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                    user.Avatar =  imageModel.Avatar;
-                    user.Username = imageModel.Username;
-                    user.Password = imageModel.Password;
-
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                     _context.ChangeTracker.Clear();

@@ -20,7 +20,7 @@
         <div class="card-body">
             <h1 class="text-center">CẬP NHẬT THÔNG TIN MÓN ĂN</h1>
             <div class="table-responsive">
-                <form asp-action="Edit">
+                <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label class="control-label">Tên món ăn</label>
@@ -41,6 +41,12 @@
                         <label asp-for="IdCategory" class="control-label">Loại món ăn</label>
                         <select asp-for="IdCategory" class="form-control" asp-items="ViewBag.IdCategory"></select>
                         <span asp-validation-for="IdCategory" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"></label>Avatar</br>
+                        <img id="profile-image1" src="~/image/imageFood/@Model.Image" alt="">
+                        <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden form-control-file" type="file" onchange="previewFile()">
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Save" class="btn btn-primary" /> |

@@ -31,7 +31,7 @@ namespace Karaoke_project.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.\\SQLExpress;Initial Catalog=web_karaoke;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source =.\\SQLExpress;Initial Catalog = web_karaoke; Integrated Security = True");
             }
         }
 
@@ -59,8 +59,6 @@ namespace Karaoke_project.Models
 
                 entity.Property(e => e.IdCus).HasColumnName("idCus");
 
-                entity.Property(e => e.IdFood).HasColumnName("idFood");
-
                 entity.Property(e => e.IdRoom).HasColumnName("idRoom");
 
                 entity.Property(e => e.Status)
@@ -73,11 +71,6 @@ namespace Karaoke_project.Models
                     .WithMany(p => p.Bills)
                     .HasForeignKey(d => d.IdCus)
                     .HasConstraintName("FK_bill_cus");
-
-                entity.HasOne(d => d.IdFoodNavigation)
-                    .WithMany(p => p.Bills)
-                    .HasForeignKey(d => d.IdFood)
-                    .HasConstraintName("FK_bill_food");
 
                 entity.HasOne(d => d.IdRoomNavigation)
                     .WithMany(p => p.Bills)
@@ -143,6 +136,10 @@ namespace Karaoke_project.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.IdCategory).HasColumnName("idCategory");
+
+                entity.Property(e => e.Image)
+                    .HasMaxLength(100)
+                    .HasColumnName("image");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(40)

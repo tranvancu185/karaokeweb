@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Karaoke_project.Models.Category>
+﻿@model IEnumerable<Karaoke_project.Models.Role>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,14 +9,14 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
-            <a class="breadcrumb-item " asp-action="Index">Quản lý loại món ăn</a>
-            <a class="breadcrumb-item active" asp-action="Index">Danh sách loại món ăn</a>
+            <a class="breadcrumb-item " asp-action="Index">Quản lý quyền truy cập</a>
+            <a class="breadcrumb-item active" asp-action="Index">Danh quyền truy cập</a>
         </nav>
     </div>
 </div>
 <div class="container-fluid" style="padding-top: 20px">
     <div class="page-header no-gutters has-tab">
-        <h1 class="text-center">DANH SÁCH LOẠI THỨC ĂN</h1>
+        <h1 class="text-center">DANH SÁCH QUYỀN TRUY CẬP</h1>
         <p>
             <a asp-action="Create">Create New</a>
         </p>
@@ -25,7 +25,7 @@
                 <thead>
                     <tr>
                         <th scope="col">#ID</th>
-                        <th scope="col">Tên Loại</th>
+                        <th scope="col">Quyền truy cập</th>
                         <th scope="col" class="colActive">Thao tác</th>
                     </tr>
                 </thead>
@@ -40,9 +40,9 @@
                                     @item.Name
                                 </td>
                                 <td class="colActive">
-                                    <a class="btn btn-success btn-tone m-r-5 " asp-area="Admin" asp-controller="Categories" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                    <a class="btn btn-primary btn-tone m-r-5 " asp-area="Admin" asp-controller="Categories" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                    <a class="btn btn-danger btn-tone m-r-5 " asp-area="Admin" asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a class="btn btn-success btn-tone m-r-5 " asp-area="Admin" asp-controller="Roles" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                    <a class="btn btn-primary btn-tone m-r-5 " asp-area="Admin" asp-controller="Roles" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                    <a class="btn btn-danger btn-tone m-r-5 " asp-area="Admin" asp-controller="Roles" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </td>
                             </tr>
                         }

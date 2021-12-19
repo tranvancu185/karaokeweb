@@ -40,6 +40,7 @@ create table food(
 	name nvarchar(40),
 	price float,
 	quantity int,
+	image nvarchar(100),
 	idCategory int,
 	CONSTRAINT FK_food_category FOREIGN KEY (idCategory)REFERENCES category(id)
 )
@@ -52,10 +53,8 @@ create table bill(
 	checkOut time,
 	total float default null,
 	status int default 0,
-	idFood int,
 	idRoom int,
 	idCus int,
-	CONSTRAINT FK_bill_food FOREIGN KEY (idFood)REFERENCES food(id),
 	CONSTRAINT FK_bill_room FOREIGN KEY (idRoom)REFERENCES room(id),
 	CONSTRAINT FK_bill_cus FOREIGN KEY (idCus)REFERENCES customer(id)
 )
@@ -72,6 +71,8 @@ create table role(
 	id int identity(1,1) primary key,
 	name nvarchar(50)
 )
+
+
 
 insert into role values('admin'),(N'Kế toán'),(N'Nhân viên'),(N'Quản lý')
 

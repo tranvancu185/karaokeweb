@@ -50,12 +50,23 @@
             </li>
             <!-- Quản lý quyền truy cập -->
             <li class="nav-item dropdown">
-                <a class="dropdown-toggle" asp-area="Admin" asp-controller="AdminUsers" asp-action="Index">
+                <a class="dropdown-toggle" href="javascript:void(0);">
                     <span class="icon-holder">
-                        <i class="anticon anticon-form"></i>
+                        <i class="anticon anticon-lock"></i>
                     </span>
-                    <span class="title">Quản lý quyền truy cập</span>
+                    <span class="title">Quản lý hệ thống</span>
+                    <span class="arrow">
+                        <i class="arrow-icon"></i>
+                    </span>
                 </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a asp-area="Admin" asp-controller="Roles" asp-action="Index">Quyền truy cập</a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="AdminUsers" asp-action="Index">Tài khoản truy cập</a>
+                    </li>
+                </ul>
             </li>
             <!-- Quản lý khách hàng -->
             <li class="nav-item dropdown">

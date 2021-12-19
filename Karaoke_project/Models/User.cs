@@ -13,9 +13,7 @@ namespace Karaoke_project.Models
         public string Id { get; set; }
         public string Hoten { get; set; }
         public int? Role { get; set; }
-        [DisplayName("Image Name")]
         public string Avatar { get; set; }
-
         [NotMapped]
         [DisplayName("Upload File")]
         public IFormFile ImageFile { get; set; }

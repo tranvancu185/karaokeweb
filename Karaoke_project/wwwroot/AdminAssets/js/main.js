@@ -1,4 +1,5 @@
-﻿function showPwd() {
+﻿
+function showPwd() {
     var x = document.getElementById("pwdInput");
     if (x.type === "password") {
         x.type = "text";

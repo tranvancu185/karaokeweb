@@ -9,7 +9,8 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
-            <a class="breadcrumb-item active" asp-action="Index">Quản lý phòng Karaoke</a>
+            <a class="breadcrumb-item " asp-action="Index">Quản lý phòng Karaoke</a>
+            <a class="breadcrumb-item active" asp-action="Index">Danh sách phòng karoke</a>
         </nav>
     </div>
 </div>
@@ -53,7 +54,7 @@
                             <td>Phòng thường</td>
                         }
                          <td>
-                            @item.Price
+                            @item.Price.Value.ToString("#,##0") VNĐ
                          </td>
                          <td class="colActive">
                             <a class="btn btn-success btn-tone m-r-5 " asp-area="Admin" asp-controller="Rooms" asp-action="Details" asp-route-id="@item.Id">Details</a> |
