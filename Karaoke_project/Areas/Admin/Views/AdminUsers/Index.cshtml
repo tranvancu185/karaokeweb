@@ -55,7 +55,7 @@
                                     <th scope="row">@item.Id</th>
                                     <td>
                                         <div class="avatar avatar-image rounded" style="height: 40px; width: 40px">
-                                            <img src="~/image/avatar/@item.Avatar" alt="">
+                                            <img id="image" src="~/image/avatar/@item.Avatar" alt="">
                                         </div>
                                     </td>
                                     <td>
@@ -80,11 +80,41 @@
             </table>
             <div aria-label="Page navigation example" class="d-flex justify-content-end p-r-150">
                 <ul class="pagination">
-                    <pager class="pager-container text-right" list="@Model" asp-area="Admin" asp-controller="AdminUsers" asp-action="Index" />
+                    <pager class="pager-container text-right" list="@Model" asp-area="Admin" asp-controller="AdminUsers" asp-route-RoleID ="@ViewBag.CurrentRoleID" asp-action="Index" />
                 </ul>
             </div>
         </div>
-        
     </div>
 </div>
+
+@section Scripts{ 
+    <script>
+        $(document).ready(function () {
+            jQuery("#idRole").change(() => {
+                RoleID = $("#idRole :selected").val();
+                RoleID = parseFloat(RoleID);
+                console.log(RoleID)
+                $('#idRole option').removeAttr('selected');
+                $("#idRole > [value =" + RoleID + "]").attr("selected", "true");
+                $.ajax({
+                    url: '/Admin/AdminUsers/Fillter',
+                    dataType: "json",
+                    type: "GET",
+                    data: {
+                        RoleID: RoleID
+                    },
+                    async: true,
+                    success: (results) => {
+                        if (results.status == "Success") {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: (xhr) => {
+                        alert("Error");
+                    }
+                })
+            })
+        })
+    </script>
+}
 

@@ -61,6 +61,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 _notyfService.Success("Tạo mới thành công!");
@@ -102,6 +103,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 try
                 {
+
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                     _notyfService.Success("Cập nhật thành công!");

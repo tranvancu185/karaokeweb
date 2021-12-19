@@ -51,14 +51,16 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="ImageFile" class="control-label"></label></br>
-                        <img id="profile-image1" src="~/AdminAssets/images/avatars/thumb-1.jpg" alt="">
-                        <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden" type="file" onchange="previewFile()">
+                        <div class="d-flex mt-2 align-items-end">
+                            <img id="profile-image1" src="~/AdminAssets/images/avatars/thumb-1.jpg" style="height: 200px; width: 200px" alt="">
+                            <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden ml-5 form-control-file" type="file" onchange="previewFile()">
+                        </div
                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-primary" />
                     </div>
-                </form>
+</form>
             </div>
         </div>
     </div>

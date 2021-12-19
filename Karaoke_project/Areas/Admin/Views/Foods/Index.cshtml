@@ -87,7 +87,37 @@
                 </ul>
             </div>
         </div>
-        
+
     </div>
 </div>
 
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            jQuery("#idCate").change(() => {
+                RoleID = $("#idCate :selected").val();
+                RoleID = parseFloat(RoleID);
+                console.log(RoleID)
+                $('#idCate option').removeAttr('selected');
+                $("#idCate > [value =" + RoleID + "]").attr("selected", "true");
+                $.ajax({
+                    url: '/Admin/Foods/Fillter',
+                    dataType: "json",
+                    type: "GET",
+                    data: {
+                        RoleID: RoleID
+                    },
+                    async: true,
+                    success: (results) => {
+                        if (results.status == "Success") {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: (xhr) => {
+                        alert("Error");
+                    }
+                })
+            })
+        })
+    </script>
+}

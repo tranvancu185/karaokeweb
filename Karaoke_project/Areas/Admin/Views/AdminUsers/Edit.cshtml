@@ -4,6 +4,8 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+
+
 <div class="page-header">
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
@@ -38,12 +40,13 @@
             <div class="table-responsive">
                 <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" readonly asp-for="Id" />
                     <div class="form-group">
                         <label class="control-label">Họ tên</label>
                         <input asp-for="Hoten" class="form-control" />
                         <span asp-validation-for="Hoten" class="text-danger"></span>
                     </div>
+                    
                     <div class="form-group">
                         <label class="control-label">Phân quyền</label>
                         <select asp-for="Role" class="form-control" asp-items="ViewBag.Role"></select>
@@ -51,8 +54,10 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label"></label>Avatar</br>
-                        <img id="profile-image1" src="~/image/avatar/@Model.Avatar"  alt="">
-                        <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden form-control-file" type="file" onchange="previewFile()">
+                        <div class="d-flex mt-2 align-items-end">
+                            <img id="profile-image1" src="~/image/avatar/@Model.Avatar" style="height: 200px; width: 200px" alt="">
+                            <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden form-control-file ml-5 " type="file" onchange="previewFile()">
+                        </div>
                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">

@@ -43,9 +43,11 @@
                         <span asp-validation-for="IdCategory" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="control-label"></label>Avatar</br>
-                        <img id="profile-image1" src="~/image/imageFood/@Model.Image" alt="">
-                        <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden form-control-file" type="file" onchange="previewFile()">
+                        <label class="control-label">Hình ảnh</label></br>
+                        <div class="d-flex mt-2 align-items-end">
+                            <img id="profile-image1" src="~/image/imageFood/@Model.Image" style="height: 200px; width: 200px" alt="">
+                            <input asp-for="ImageFile" id="profile-image-upload" accept=".png, .jpg, .jpeg" class="hidden form-control-file ml-5 " type="file" onchange="previewFile()">
+                        </div>
                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">

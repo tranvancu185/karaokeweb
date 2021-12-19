@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Karaoke_project.Models;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -13,10 +14,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
     public class RolesController : Controller
     {
         private readonly web_karaokeContext _context;
+        public INotyfService _notyfService { get; }
 
-        public RolesController(web_karaokeContext context)
+        public RolesController(web_karaokeContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         // GET: Admin/Roles
@@ -60,6 +63,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 _context.Add(role);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Thêm quyền truy cập thành công!");
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
@@ -97,8 +101,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 try
                 {
+                    
                     _context.Update(role);
                     await _context.SaveChangesAsync();
+                    _notyfService.Success("Cập nhật quyền truy cập thành công!");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -142,6 +148,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             var role = await _context.Roles.FindAsync(id);
             _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
+            _notyfService.Success("Xóa quyền truy cập thành công!");
             return RedirectToAction(nameof(Index));
         }
 

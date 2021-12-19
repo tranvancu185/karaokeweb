@@ -19,6 +19,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         public RoomsController(web_karaokeContext context, INotyfService notyfService)
         {
             _context = context;
+            _notyfService = notyfService;
         }
 
         // GET: Admin/Rooms
@@ -101,6 +102,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 try
                 {
+
                     _context.Update(room);
                     await _context.SaveChangesAsync();
                     _notyfService.Success("Cập nhật mới thành công!");

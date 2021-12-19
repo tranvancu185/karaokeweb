@@ -29,15 +29,36 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Foods
-        public IActionResult Index(int? page)
+        public IActionResult Index(int page=1 , int RoleID = 0)
         {
-            var pageNumber = page == null || page <= 0 ? 1 : page.Value;
+            var pageNumber = page;
             var pageSize = 20;
-            var web_karaokeContext = _context.Foods.AsNoTracking().OrderBy(x => x.Id).Include(f => f.IdCategoryNavigation);
-            PagedList<Food> pagedList = new PagedList<Food>(web_karaokeContext, pageNumber, pageSize);
+
+            List<Food> web_karaokeContext = new List<Food>();
+
+            if (RoleID != 0)
+            {
+                web_karaokeContext = _context.Foods.AsNoTracking().Where(x => x.IdCategory == RoleID).Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
+            }
+            else
+            {
+                web_karaokeContext = _context.Foods.AsNoTracking().Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
+            }
+            PagedList<Food> pagedList = new PagedList<Food>(web_karaokeContext.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;
+            ViewBag.CurrentRoleID = RoleID;
             ViewData["IdCategory"] = new SelectList(_context.Categories, "Id", "Name");
             return View(pagedList);
+        }
+
+        public IActionResult Fillter(int RoleID = 0)
+        {
+            var url = $"/Admin/Foods?RoleID={RoleID}";
+            if (RoleID == 0)
+            {
+                url = $"/Admin/Foods";
+            }
+            return Json(new { status = "Success", redirectUrl = url });
         }
 
         // GET: Admin/Foods/Details/5
@@ -137,7 +158,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 try
                 {
                     Food imageModel = await _context.Foods.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
                     if (food.ImageFile == null)
                     {
                         food.Image = imageModel.Image;
