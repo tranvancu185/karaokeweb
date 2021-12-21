@@ -10,9 +10,29 @@
                     <span class="title">Dashboard</span>
                 </a>
             </li>
+            <!-- Đặt phòng -->
+            <li class="nav-item dropdown">
+                <a class="dropdown-toggle" href="javascript:void(0);">
+                    <span class="icon-holder">
+                        <i class="anticon anticon-lock"></i>
+                    </span>
+                    <span class="title">Quản lý đặt phòng</span>
+                    <span class="arrow">
+                        <i class="arrow-icon"></i>
+                    </span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">Danh sách phòng đã đặt</a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Book">Đặt phòng</a>
+                    </li>
+                </ul>
+            </li>
             <!-- Quản lý phòng karaoke -->
             <li class="nav-item dropdown">
-                <a class="dropdown-toggle" asp-area="Admin" asp-controller="Rooms" asp-action="Index" >
+                <a class="dropdown-toggle" asp-area="Admin" asp-controller="Rooms" asp-action="Index">
                     <span class="icon-holder">
                         <i class="anticon anticon-appstore"></i>
                     </span>
@@ -75,15 +95,6 @@
                         <i class="anticon anticon-table"></i>
                     </span>
                     <span class="title">Quản lý khách hàng</span>
-                </a>
-            </li>
-            <!-- Đặt phòng -->
-            <li class="nav-item dropdown">
-                <a class="dropdown-toggle" href="javascript:void(0);">
-                    <span class="icon-holder">
-                        <i class="anticon anticon-appstore"></i>
-                    </span>
-                    <span class="title">Đặt Phòng</span>
                 </a>
             </li>
             <!-- Thống kê doanh thu -->

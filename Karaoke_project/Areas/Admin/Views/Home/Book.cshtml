@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Book";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý đặt phòng</a>
+            <span class="breadcrumb-item active">Đặt phòng</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 10px">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="text-center">THÊM THÔNG TIN ĐẶT PHÒNG</h1>
+            <div class="table-responsive" style="padding-top: 20px">
+                <form id="form-validation">
+                    <div class="form-group">
+                        <label class="control-label">Tên khách hàng</label>
+                        <input class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Số điện thoại</label>
+                        <input class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Phòng đặt</label>
+                        <select class="form-control" asp-items="ViewBag.Room"></select>
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ngày đặt</label>
+                        <input class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Giờ đặt</label>
+                        <input class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Giờ kết thúc</label>
+                        <input class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Đặt món ăn</label>
+                        <input class="form-control" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" /> |
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
