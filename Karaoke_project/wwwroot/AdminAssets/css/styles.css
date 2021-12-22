@@ -5,3 +5,11 @@
 tbody tr:hover {
     background-color: lavender;
 }
+
+
+
+.model-food {
+    float:left;
+    margin-left: 50px;
+    width: 100%;
+}

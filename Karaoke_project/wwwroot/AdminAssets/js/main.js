@@ -23,12 +23,19 @@ function previewFile() {
         reader.readAsDataURL(file);
     }
 }
-
+$('#myTable').DataTable({
+    "scrollY": "50vh",
+    "scrollCollapse": true,
+});
 $(function () {
     $('#profile-image1').on('click', function () {
         $('#profile-image-upload').click();
     });
 });
+
+$('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+})
 
 $(document).ready(function () {
     $("#form-validation").validate({

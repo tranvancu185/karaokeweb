@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Book";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
@@ -13,53 +12,315 @@
         </nav>
     </div>
 </div>
-<div class="container-fluid" style="padding-top: 10px">
-    <div class="card">
-        <div class="card-body">
-            <h1 class="text-center">THÊM THÔNG TIN ĐẶT PHÒNG</h1>
-            <div class="table-responsive" style="padding-top: 20px">
-                <form id="form-validation">
-                    <div class="form-group">
-                        <label class="control-label">Tên khách hàng</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
+<div class="container float-left" style="padding-top: 10px">
+    <div class="row">
+        <!-- col-md-9 -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="text-center">THÊM THÔNG TIN ĐẶT PHÒNG</h1>
+                    <div class="table-responsive" style="padding-top: 20px">
+                        <form id="form-validation">
+                            <div class="form-group">
+                                <label class="control-label">Tên khách hàng</label>
+                                <input class="form-control" />
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Số điện thoại</label>
+                                <input class="form-control" />
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Phòng đặt</label>
+                                <select class="form-control" asp-items="ViewBag.Room"></select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Ngày đặt</label>
+                                <input class="form-control" />
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Giờ đặt</label>
+                                <input class="form-control" />
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Giờ kết thúc</label>
+                                <input class="form-control" />
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Đặt món ăn</label>
+                                <button type="button" class="btn btn-primary" id="model-open" data-toggle="modal" data-target="#model-book-food">
+                                    Launch demo modal
+                                </button>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-primary" /> |
+                                <a asp-action="Index">Back to List</a>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">Số điện thoại</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <!-- col-md-3 -->
+        <div class="">
+            <div class="card">
+                <div class="card-body">
+                    <div id="invoice" class="p-h-30">
+                        <div class="m-t-15 lh-2">
+                            <div class="float-right">
+                                <h2>INVOICE</h2>
+                            </div>
+                        </div>
+                        <div class="row m-t-20 lh-2">
+                            <div class="col-sm-9">
+                                <h3 class="p-l-10 m-t-10">Invoice To:</h3>
+                                <address class="p-l-10 m-t-10">
+                                    <span class="font-weight-semibold text-dark">Genting Holdings.</span><br>
+                                    <span>8626 Maiden Dr. </span><br>
+                                    <span>Niagara Falls, New York 14304</span>
+                                </address>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="m-t-80">
+                                    <div class="text-dark text-uppercase d-inline-block">
+                                        <span class="font-weight-semibold text-dark">Invoice No :</span>
+                                    </div>
+                                    <div class="float-right">#1668</div>
+                                </div>
+                                <div class="text-dark text-uppercase d-inline-block">
+                                    <span class="font-weight-semibold text-dark">Date :</span>
+                                </div>
+                                <div class="float-right">25/7/2018</div>
+                            </div>
+                        </div>
+                        <div class="m-t-20">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Items</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>1</th>
+                                            <td>Asus Zenfone 3 Zoom ZE553KL Dual Sim (4GB, 64GB)</td>
+                                            <td>2</td>
+                                            <td>$450.00</td>
+                                            <td>$900.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row m-t-30 lh-1-8">
+                                <div class="col-sm-12">
+                                    <div class="float-right text-right">
+                                        <p>Sub - Total amount: $2,325</p>
+                                        <p>vat (10%) : $232 </p>
+                                        <hr>
+                                        <h3><span class="font-weight-semibold text-dark">Total :</span> $2,557.00</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">Phòng đặt</label>
-                        <select class="form-control" asp-items="ViewBag.Room"></select>
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Ngày đặt</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Giờ đặt</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Giờ kết thúc</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Đặt món ăn</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Save" class="btn btn-primary" /> |
-                        <a asp-action="Index">Back to List</a>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="model-book-food" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="modal-dialog modal-dialog-centered modal-xl model-food" role="document">
+                <div class="modal-content  ">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Đặt món ăn</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="row m-b-30">
+                        <div class="col-lg-8">
+                            <div class="d-md-flex">
+                                <div class="m-b-10 m-r-15">
+                                    <select class="custom-select" id="idCate" name="idCate" style="min-width: 200px;" asp-items="ViewBag.Cat">
+                                        <option value="0" selected>Chọn loại món ăn</option>
+                                    </select>
+                                </div>
+                                <input id="myInput" type="text" placeholder="Search..">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#ID</th>
+                                    <th scope="col">Tên món ăn</th>
+                                    <th scope="col">Giá tiền</th>
+                                    <th scope="col">Số lượng</th>
+                                    <th scope="col">Loại</th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-model-table-foods" style="overflow-y: scroll;">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="modal-dialog-centered" style="height:80%; width:100%; margin-right:20px">
+                <div class="modal-content" style="float:right;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body table-responsive">
+                        <table class="table" id="book-food-detail">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tên món ăn</th>
+                                    <th scope="col">Giá tiền</th>
+                                    <th scope="col">Số lượng</th>
+                                    <th scope="col">Loại</th>
+                                    <th scope="col">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-model-table-foods" style="overflow-y: scroll;">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        let count = [];
+        $(document).ready(function () {
+            jQuery('#model-open').click(() => {
+                count = [];
+                getFood(0);
+            })
+            jQuery("#idCate").change(() => {
+                RoleID = $("#idCate :selected").val();
+                RoleID = parseFloat(RoleID);
+                console.log(RoleID)
+                $('#idCate option').removeAttr('selected');
+                $("#idCate > [value =" + RoleID + "]").attr("selected", "true");
+                getFood(RoleID);
+            })
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tbody-model-table-foods tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        })
+
+        function addQuantity(id) {
+            getFoodById(id)
+        }
+
+        function getFood(RoleID) {
+            $.ajax({
+                url: '/Admin/Home/GetFood',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    RoleID: RoleID
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        $("#tbody-model-table-foods").empty();
+                        let data = results.data.$values;
+                        data.forEach((foo) => {
+                            foo.status = (foo.quantity != 0) ? 'Còn hàng' : 'Hết hàng';
+
+                            let tr =
+                                "<tr>" +
+                                    "<td scope ='col'>" + foo.id + "</td>" +
+                                    "<td>" + foo.name + "</td>" +
+                                    "<td>" + foo.price + "</td>" +
+                                    "<td>" + foo.quantity + "</td >" +
+                                    "<td>" + foo.idCategoryNavigation.name + "</td>" +
+                                    "<td>" + foo.status + "</td>" +
+                                    "<td>" +
+                                        "<button id='btn" + foo.id + "' type='button' onClick='addQuantity(" + foo.id + ")' class='btn btn-primary'>Thêm</button>" +
+                                    "</td>" +
+                                "</tr > "
+                            $('#myTable > tbody:last').append(tr);
+                        })
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+
+        function getFoodById(id) {
+
+            $.ajax({
+                url: '/Admin/Home/GetFoodById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        let data = results.data.result;
+
+                        let tr = "<tr id='tr" + data.id + "'>" +
+                            "<td>" + data.name + "</td>" +
+                            "<td>" + data.price + "</td><td><input type='text' class='form - control' aria-label='Small' aria-describedby='inputGroup - sizing - sm'></td>" +
+                            "<td>" + data.idCategoryNavigation.name + "</td>" +
+                            "<td><button type='button' onClick='removeRow(" + data.id + ")' class='btn btn-danger btn-tone'>Xóa</button></td>" +
+                            "</tr >"
+
+                        $('#book-food-detail > tbody:last').append(tr);
+                        $('button#btn' + data.id).attr('disabled', 'disabled');
+                    } else {
+                        alert('No Food')
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+
+        function removeRow(id) {
+            $('#tr' + id).remove();
+            $("#btn"+id).removeAttr('disabled');
+        }
+    </script>
+}
+}

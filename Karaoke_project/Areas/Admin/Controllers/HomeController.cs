@@ -3,10 +3,12 @@ using Karaoke_project.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -30,8 +32,35 @@ namespace Karaoke_project.Areas.Admin.Controllers
 
         public IActionResult Book()
         {
+            ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Room"] = new SelectList(_context.Rooms, "Id", "Name");
             return View();
+        }
+
+
+        public IActionResult GetFood(int RoleID = 0)
+        {
+            List<Food> web_karaokeContext = new List<Food>();
+            if(RoleID == 0)
+            {
+                web_karaokeContext = _context.Foods.AsNoTracking().Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.IdCategory).ToList();
+            }
+            else
+            {
+                web_karaokeContext = _context.Foods.AsNoTracking().Where(x => x.IdCategory == RoleID).Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
+            }
+
+            return Json(new { status = "Success", data = web_karaokeContext });
+        }
+
+        public IActionResult GetFoodById(int id = 0)
+        {
+            if(id == null)
+            {
+                return Json(new { status = "Failed"});
+            }
+            var web_karaokeContext = _context.Foods.Include(f => f.IdCategoryNavigation).FirstOrDefaultAsync(m => m.Id == id);
+            return Json(new { status = "Success", data = web_karaokeContext });
         }
 
         [HttpPost]
@@ -45,10 +74,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategory"] = new SelectList(_context.Categories, "Id", "Name", food.IdCategory);
-            return View(food);
+            return View(nameof(Index));
         }
 
-
+        public IActionResult BookFood()
+        {
+            ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
+            return View();
+        }
     }
 }
