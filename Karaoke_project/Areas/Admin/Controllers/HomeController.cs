@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -64,17 +65,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Book(Food food)
+        public async Task<IActionResult> AddCus()
         {
-            if (ModelState.IsValid)
+            string body = "";
+            using (StreamReader stream = new StreamReader(Request.Body))
             {
-                _context.Add(food);
-                await _context.SaveChangesAsync();
-                _notyfService.Success("Tạo mới thành công!");
-                return RedirectToAction(nameof(Index));
+                body = await stream.ReadToEndAsync();
             }
-            return View(nameof(Index));
+            return Json(new { status = "Success", data = body });
         }
 
         public IActionResult BookFood()
@@ -82,5 +80,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
+
     }
 }

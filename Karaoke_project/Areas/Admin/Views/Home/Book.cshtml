@@ -23,32 +23,32 @@
                         <form id="form-validation">
                             <div class="form-group">
                                 <label class="control-label">Tên khách hàng</label>
-                                <input class="form-control" />
+                                <input id="name-cus" class="form-control" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Số điện thoại</label>
-                                <input class="form-control" />
+                                <input id="phone-cus" class="form-control" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Phòng đặt</label>
-                                <select class="form-control" asp-items="ViewBag.Room"></select>
+                                <select id="id-room" name="txtNameCus" class="form-control" asp-items="ViewBag.Room"></select>
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Ngày đặt</label>
-                                <input class="form-control" />
+                                <input placeholder="Select date" type="date" id="date-book" class="form-control">
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ đặt</label>
-                                <input class="form-control" />
+                                <input class="form-control" type="text" id="timepicker" name="timepicker" placeholder="Enter Time" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ kết thúc</label>
-                                <input class="form-control" />
+                                <input class="form-control" type="text" id="timepicker" name="timepicker" placeholder="Enter Time" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -59,8 +59,7 @@
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-primary" /> |
-                                <a asp-action="Index">Back to List</a>
+                                <input type="button" value="Save" class="btn btn-primary" onclick="submitBook()"/> |
                             </div>
                         </form>
                     </div>
@@ -220,7 +219,14 @@
 
 @section Scripts{
     <script>
+        
+        var food = [];
         let count = [];
+
+        $("#timepicker").datetimepicker({
+            format: "HH:mm:ss"
+        });
+
         $(document).ready(function () {
             jQuery('#model-open').click(() => {
                 count = [];
@@ -242,11 +248,12 @@
             });
         })
 
-        function addQuantity(id) {
-            getFoodById(id)
-        }
-
         function getFood(RoleID) {
+            var dateBook = $("#date-book").val();
+            var checkIn = $("#time-book");
+            var checkOut = $("#end-time-book").val();
+            console.log(checkIn);
+            console.log(checkIn[0].valueAsDate);
             $.ajax({
                 url: '/Admin/Home/GetFood',
                 dataType: "json",
@@ -285,7 +292,6 @@
         }
 
         function getFoodById(id) {
-
             $.ajax({
                 url: '/Admin/Home/GetFoodById',
                 dataType: "json",
@@ -297,7 +303,8 @@
                 success: (results) => {
                     if (results.status == "Success") {
                         let data = results.data.result;
-
+                        food.push(data);
+                        console.log(food)
                         let tr = "<tr id='tr" + data.id + "'>" +
                             "<td>" + data.name + "</td>" +
                             "<td>" + data.price + "</td><td><input type='text' class='form - control' aria-label='Small' aria-describedby='inputGroup - sizing - sm'></td>" +
@@ -317,9 +324,50 @@
             })
         }
 
+        function submitBook() {
+            var nameCus = $("#name-cus").val();
+            var phoneCus = $("#phone-cus").val();
+            var idRoom = $("#id-room :selected").val();
+            var dateBook = $("#date-book").val();
+            var checkIn = "12:00:00"
+            var checkOut = "17:00:00"
+            var cus = {
+                "nameCus": nameCus,
+                "phoneCus": phoneCus
+            };
+            addCus(cus);
+            
+        }
+        function addCus(cus) {
+            $.ajax({
+                url: '/Admin/Home/AddCus',
+                dataType: "json",
+                contentType: "application/json",
+                type: "POST",
+                data: JSON.stringify({
+                    cus: cus
+                }),
+                async: true,
+                success: (results) => {
+                    console.log(JSON.parse(results.data))
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
         function removeRow(id) {
             $('#tr' + id).remove();
-            $("#btn"+id).removeAttr('disabled');
+            $("#btn" + id).removeAttr('disabled');
+
+            food = jQuery.grep(food, function (value) {
+                return value.id != id;
+            });
+            console.log(food)
+        }
+
+        function addQuantity(id) {
+            getFoodById(id)
         }
     </script>
 }
