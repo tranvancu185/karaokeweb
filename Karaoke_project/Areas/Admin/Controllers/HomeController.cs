@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,7 +73,8 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 body = await stream.ReadToEndAsync();
             }
-            return Json(new { status = "Success", data = body });
+            Debug.WriteLine(body);
+            return Json(new { status = "Success", data = body});
         }
 
         public IActionResult BookFood()

@@ -223,14 +223,10 @@
         var food = [];
         let count = [];
 
-        $("#timepicker").datetimepicker({
-            format: "HH:mm:ss"
-        });
-
         $(document).ready(function () {
+            getFood(0);
             jQuery('#model-open').click(() => {
                 count = [];
-                getFood(0);
             })
             jQuery("#idCate").change(() => {
                 RoleID = $("#idCate :selected").val();
@@ -249,11 +245,6 @@
         })
 
         function getFood(RoleID) {
-            var dateBook = $("#date-book").val();
-            var checkIn = $("#time-book");
-            var checkOut = $("#end-time-book").val();
-            console.log(checkIn);
-            console.log(checkIn[0].valueAsDate);
             $.ajax({
                 url: '/Admin/Home/GetFood',
                 dataType: "json",
@@ -268,7 +259,6 @@
                         let data = results.data.$values;
                         data.forEach((foo) => {
                             foo.status = (foo.quantity != 0) ? 'Còn hàng' : 'Hết hàng';
-
                             let tr =
                                 "<tr>" +
                                     "<td scope ='col'>" + foo.id + "</td>" +
@@ -332,12 +322,17 @@
             var checkIn = "12:00:00"
             var checkOut = "17:00:00"
             var cus = {
-                "nameCus": nameCus,
-                "phoneCus": phoneCus
+                nameCus : nameCus,
+                phoneCus: phoneCus,
+                idRoom : idRoom,
+                dateBook: dateBook,
+                checkIn: checkIn,
+                checkOut: checkOut
             };
             addCus(cus);
             
         }
+
         function addCus(cus) {
             $.ajax({
                 url: '/Admin/Home/AddCus',
@@ -356,6 +351,7 @@
                 }
             })
         }
+
         function removeRow(id) {
             $('#tr' + id).remove();
             $("#btn" + id).removeAttr('disabled');

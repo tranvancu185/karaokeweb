@@ -23,10 +23,7 @@ function previewFile() {
         reader.readAsDataURL(file);
     }
 }
-$('#myTable').DataTable({
-    "scrollY": "50vh",
-    "scrollCollapse": true,
-});
+
 $(function () {
     $('#profile-image1').on('click', function () {
         $('#profile-image-upload').click();
@@ -97,4 +94,13 @@ $(document).ready(function () {
         }
     });
 });
+
+function showPwd() {
+    var x = document.getElementById("pwdInput");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}
 

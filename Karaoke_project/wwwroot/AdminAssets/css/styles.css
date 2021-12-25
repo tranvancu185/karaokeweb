@@ -13,3 +13,11 @@ tbody tr:hover {
     margin-left: 50px;
     width: 100%;
 }
+
+.colActive {
+    text-align: center;
+}
+
+tbody tr:hover {
+    background-color: lavender;
+}
