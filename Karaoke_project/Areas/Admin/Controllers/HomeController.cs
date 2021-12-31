@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -73,8 +73,17 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 body = await stream.ReadToEndAsync();
             }
-            Debug.WriteLine(body);
-            return Json(new { status = "Success", data = body});
+            dynamic json = JsonConvert.DeserializeObject(body);
+            dynamic data = json.cus;
+            Customer cus = new Customer();
+            cus.Hoten = data.nameCus;
+            cus.Phone = data.phoneCus;
+            Console.WriteLine("alo :" +data);
+            _context.Add(cus);
+            await _context.SaveChangesAsync();
+
+
+            return Json(new { status = "Success"});
         }
 
         public IActionResult BookFood()
