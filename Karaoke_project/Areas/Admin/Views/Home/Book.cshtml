@@ -12,10 +12,10 @@
         </nav>
     </div>
 </div>
-<div class="container float-left" style="padding-top: 10px">
-    <div class="row">
+<div class="container-fluid">
+    <div class="row padding">
         <!-- col-md-9 -->
-        <div class="col-md-9">
+        <div class="col-md-7 col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <h1 class="text-center">THÊM THÔNG TIN ĐẶT PHÒNG</h1>
@@ -51,53 +51,27 @@
                                 <input class="form-control" type="text" id="timepicker" name="timepicker" placeholder="Enter Time" />
                                 <span class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label class="control-label">Đặt món ăn</label>
+                            <div class="form-group text-right">
                                 <button type="button" class="btn btn-primary" id="model-open" data-toggle="modal" data-target="#model-book-food">
-                                    Launch demo modal
+                                    Đặt món ăn
                                 </button>
+                                <input type="button" value="Save" class="btn btn-success" onclick="submitBook()" />
                                 <span class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <input type="button" value="Save" class="btn btn-primary" onclick="submitBook()"/> |
-                            </div>
+                     
                         </form>
                     </div>
                 </div>
             </div>
         </div>
         <!-- col-md-3 -->
-        <div class="">
+        <div class="col-md-5 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <div id="invoice" class="p-h-30">
-                        <div class="m-t-15 lh-2">
-                            <div class="float-right">
-                                <h2>INVOICE</h2>
-                            </div>
-                        </div>
-                        <div class="row m-t-20 lh-2">
-                            <div class="col-sm-9">
-                                <h3 class="p-l-10 m-t-10">Invoice To:</h3>
-                                <address class="p-l-10 m-t-10">
-                                    <span class="font-weight-semibold text-dark">Genting Holdings.</span><br>
-                                    <span>8626 Maiden Dr. </span><br>
-                                    <span>Niagara Falls, New York 14304</span>
-                                </address>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="m-t-80">
-                                    <div class="text-dark text-uppercase d-inline-block">
-                                        <span class="font-weight-semibold text-dark">Invoice No :</span>
-                                    </div>
-                                    <div class="float-right">#1668</div>
-                                </div>
-                                <div class="text-dark text-uppercase d-inline-block">
-                                    <span class="font-weight-semibold text-dark">Date :</span>
-                                </div>
-                                <div class="float-right">25/7/2018</div>
-                            </div>
-                        </div>
+                    <div id="invoice" class="p-h-30">                
+                        <div class="text-center text-uppercase">
+                            <h2>Hóa đơn</h2>
+                        </div>                   
                         <div class="m-t-20">
                             <div class="table-responsive">
                                 <table class="table">
@@ -140,28 +114,30 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="model-book-food" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="container-fluid modal fade bd-example-modal-lg" id="model-book-food" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="row">
         <div class="col-md-8">
             <div class="modal-dialog modal-dialog-centered modal-xl model-food" role="document">
-                <div class="modal-content  ">
+                <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Đặt món ăn</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="row m-b-30">
-                        <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 pt-3">
                             <div class="d-md-flex">
                                 <div class="m-b-10 m-r-15">
-                                    <select class="custom-select" id="idCate" name="idCate" style="min-width: 200px;" asp-items="ViewBag.Cat">
+                                    <select class="custom-select mt-2" id="idCate" name="idCate" style="min-width: 200px;" asp-items="ViewBag.Cat">
                                         <option value="0" selected>Chọn loại món ăn</option>
                                     </select>
                                 </div>
-                                <input id="myInput" type="text" placeholder="Search..">
+                                <input id="myInput" type="text" placeholder="Search.." class="w-75">
                             </div>
                         </div>
+                        <div class="col-lg-1"></div>
                     </div>
                     <div class="modal-body">
                         <table class="table" id="myTable">
@@ -297,7 +273,7 @@
                         console.log(food)
                         let tr = "<tr id='tr" + data.id + "'>" +
                             "<td>" + data.name + "</td>" +
-                            "<td>" + data.price + "</td><td><input type='text' class='form - control' aria-label='Small' aria-describedby='inputGroup - sizing - sm'></td>" +
+                            "<td>" + data.price + "</td><td><input type='text' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'></td>" +
                             "<td>" + data.idCategoryNavigation.name + "</td>" +
                             "<td><button type='button' onClick='removeRow(" + data.id + ")' class='btn btn-danger btn-tone'>Xóa</button></td>" +
                             "</tr >"
