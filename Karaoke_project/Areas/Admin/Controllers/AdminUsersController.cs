@@ -99,37 +99,44 @@ namespace Karaoke_project.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 User userExist = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id || x.Username == user.Username);
-                if ((userExist.Id).ToString().Replace(" ", string.Empty) == user.Id.ToString() ){
-                    _notyfService.Error("Id nhân viên đã tồn tại!");
-                    return RedirectToAction(nameof(Create));
-                }
-                if ((userExist.Username).ToString().Replace(" ", string.Empty) == user.Username.ToString())
+                if(userExist != null)
                 {
-                    _notyfService.Error("Username nhân viên đã tồn tại!");
-                    return RedirectToAction(nameof(Create));
-                }
-                if (user.ImageFile != null)
-                {
-                    string wwwRootPath = _hostEnvironment.WebRootPath;
-                    string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
-                    string extension = Path.GetExtension(user.ImageFile.FileName);
-                    user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
-                    string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    if ((userExist.Id).ToString().Replace(" ", string.Empty) == user.Id.ToString())
                     {
-                        await user.ImageFile.CopyToAsync(fileStream);
+                        _notyfService.Error("Id nhân viên đã tồn tại!");
+                        return RedirectToAction(nameof(Create));
+                    }
+                    if ((userExist.Username).ToString().Replace(" ", string.Empty) == user.Username.ToString())
+                    {
+                        _notyfService.Error("Username nhân viên đã tồn tại!");
+                        return RedirectToAction(nameof(Create));
                     }
                 }
                 else
                 {
-                    user.Avatar = "thumb-1.jpg";
+                    if (user.ImageFile != null)
+                    {
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                        string extension = Path.GetExtension(user.ImageFile.FileName);
+                        user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                        string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await user.ImageFile.CopyToAsync(fileStream);
+                        }
+                    }
+                    else
+                    {
+                        user.Avatar = "thumb-1.jpg";
+                    }
+
+                    _context.Add(user);
+                    await _context.SaveChangesAsync();
+                    _context.ChangeTracker.Clear();
+                    _notyfService.Success("Tạo mới thành công!");
+                    return RedirectToAction(nameof(Index));
                 }
-                
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                _context.ChangeTracker.Clear();
-                _notyfService.Success("Tạo mới thành công!");
-                return RedirectToAction(nameof(Index));
             }
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
             return View(user);

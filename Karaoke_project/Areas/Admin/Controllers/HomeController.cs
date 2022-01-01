@@ -79,13 +79,23 @@ namespace Karaoke_project.Areas.Admin.Controllers
             cus.Hoten = data.nameCus;
             cus.Phone = data.phoneCus;
             Console.WriteLine("alo :" +data);
-            _context.Add(cus);
-            await _context.SaveChangesAsync();
+            this.checkCus(cus);
 
 
             return Json(new { status = "Success"});
         }
-
+        public async Task checkCus(Customer cus)
+        {
+            Customer CusExist = _context.Customers.AsNoTracking().FirstOrDefault(x => x.Phone == cus.Phone);
+            if (CusExist != null)
+            {
+            }
+            else
+            {
+                _context.Add(cus);
+                await _context.SaveChangesAsync();
+            }
+        }
         public IActionResult BookFood()
         {
             ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");

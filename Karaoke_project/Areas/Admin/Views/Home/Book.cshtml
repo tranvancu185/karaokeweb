@@ -74,24 +74,18 @@
                         </div>                   
                         <div class="m-t-20">
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" id="table-bill">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Items</th>
-                                            <th>Quantity</th>
-                                            <th>Price</th>
-                                            <th>Total</th>
+                                            <th>ID</th>
+                                            <th>Tên món ăn</th>
+                                            <th>Loại</th>
+                                            <th>Giá tiền</th>
+                                            <th>Số lượng</th>
+                                            <th>Thành tiền</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th>1</th>
-                                            <td>Asus Zenfone 3 Zoom ZE553KL Dual Sim (4GB, 64GB)</td>
-                                            <td>2</td>
-                                            <td>$450.00</td>
-                                            <td>$900.00</td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -158,7 +152,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" onclick="submitFood()" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -198,6 +192,8 @@
         
         var food = [];
         let count = [];
+        var totalFood = 0;
+        var totalBill = 0;
 
         $(document).ready(function () {
             getFood(0);
@@ -207,7 +203,6 @@
             jQuery("#idCate").change(() => {
                 RoleID = $("#idCate :selected").val();
                 RoleID = parseFloat(RoleID);
-                console.log(RoleID)
                 $('#idCate option').removeAttr('selected');
                 $("#idCate > [value =" + RoleID + "]").attr("selected", "true");
                 getFood(RoleID);
@@ -270,10 +265,9 @@
                     if (results.status == "Success") {
                         let data = results.data.result;
                         food.push(data);
-                        console.log(food)
                         let tr = "<tr id='tr" + data.id + "'>" +
                             "<td>" + data.name + "</td>" +
-                            "<td>" + data.price + "</td><td><input type='text' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'></td>" +
+                            "<td>" + data.price + "</td><td><input id='quan" + data.id + "' type='text' value='1' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'></td>" +
                             "<td>" + data.idCategoryNavigation.name + "</td>" +
                             "<td><button type='button' onClick='removeRow(" + data.id + ")' class='btn btn-danger btn-tone'>Xóa</button></td>" +
                             "</tr >"
@@ -289,8 +283,9 @@
                 }
             })
         }
-
+        
         function submitBook() {
+            console.log(totalBill)
             var nameCus = $("#name-cus").val();
             var phoneCus = $("#phone-cus").val();
             var idRoom = $("#id-room :selected").val();
@@ -303,10 +298,11 @@
                 idRoom : idRoom,
                 dateBook: dateBook,
                 checkIn: checkIn,
-                checkOut: checkOut
+                checkOut: checkOut,
+                foodBook: food,
+                totalBook: totalBill
             };
             addCus(cus);
-            
         }
 
         function addCus(cus) {
@@ -328,6 +324,28 @@
             })
         }
 
+        function submitFood() {
+            totalFood = 0;
+            totalBill = 0;
+            $("#table-bill > tbody").empty();
+            food.forEach((foo) => {
+                let idTr = $("input#quan" + foo.id).val();
+                if (idTr) {
+                    foo.quanBook = idTr;
+                }
+                let tr = "<tr>" +
+                    "<td>" + foo.id + "</td>" +
+                    "<td>" + foo.name + "</td>" +
+                    "<td>" + foo.idCategoryNavigation.name + "</td>" +
+                    "<td>" + foo.price + "</td><td>" + foo.quanBook + "</td>" +
+                    "<td>" + foo.price * foo.quanBook + "</td>" +
+                    "</tr >"
+                $('#table-bill > tbody:last').append(tr);
+                totalFood += (foo.price * foo.quanBook);
+                totalBill += totalFood
+            })
+        }
+
         function removeRow(id) {
             $('#tr' + id).remove();
             $("#btn" + id).removeAttr('disabled');
@@ -335,7 +353,6 @@
             food = jQuery.grep(food, function (value) {
                 return value.id != id;
             });
-            console.log(food)
         }
 
         function addQuantity(id) {
