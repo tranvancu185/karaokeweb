@@ -71,15 +71,19 @@
                     <div id="invoice" class="p-h-30">                
                         <div class="text-center text-uppercase">
                             <h2>Hóa đơn</h2>
-                        </div>                   
+                        </div>
+                        <div>
+                            <p>Tên khách hàng: </p>
+                            <p>Phòng đặt: </p>
+                            <p>Ngày đặt: </p>
+                        </div>
                         <div class="m-t-20">
                             <div class="table-responsive">
                                 <table class="table" id="table-bill">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Tên món ăn</th>
-                                            <th>Loại</th>
+                                            <th>Tên món ăn</th>                      
                                             <th>Giá tiền</th>
                                             <th>Số lượng</th>
                                             <th>Thành tiền</th>
@@ -159,7 +163,7 @@
         </div>
         <div class="col-md-4">
             <div class="modal-dialog-centered" style="height:80%; width:100%; margin-right:20px">
-                <div class="modal-content" style="float:right;">
+                <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -335,8 +339,7 @@
                 }
                 let tr = "<tr>" +
                     "<td>" + foo.id + "</td>" +
-                    "<td>" + foo.name + "</td>" +
-                    "<td>" + foo.idCategoryNavigation.name + "</td>" +
+                    "<td>" + foo.name + "</td>" +                  
                     "<td>" + foo.price + "</td><td>" + foo.quanBook + "</td>" +
                     "<td>" + foo.price * foo.quanBook + "</td>" +
                     "</tr >"
