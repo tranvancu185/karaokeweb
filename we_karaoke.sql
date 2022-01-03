@@ -60,12 +60,15 @@ create table bill(
 )
 
 create table billDetail(
+	id int Identity(1,1) primary key,
 	idFood int,
 	idBill int,
 	quantity int,
 	CONSTRAINT FK_billdetail_food FOREIGN KEY (idFood)REFERENCES food(id),
 	CONSTRAINT FK_billdetail_bill FOREIGN KEY (idBill)REFERENCES bill(id),
 )
+
+drop table billDetail
 
 create table role(
 	id int identity(1,1) primary key,
