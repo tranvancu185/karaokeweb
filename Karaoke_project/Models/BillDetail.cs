@@ -7,6 +7,7 @@ namespace Karaoke_project.Models
 {
     public partial class BillDetail
     {
+        public int Id { get; set; }
         public int? IdFood { get; set; }
         public int? IdBill { get; set; }
         public int? Quantity { get; set; }

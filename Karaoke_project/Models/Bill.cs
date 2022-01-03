@@ -7,6 +7,11 @@ namespace Karaoke_project.Models
 {
     public partial class Bill
     {
+        public Bill()
+        {
+            BillDetails = new HashSet<BillDetail>();
+        }
+
         public int Id { get; set; }
         public DateTime? CreateAt { get; set; }
         public DateTime? DateBook { get; set; }
@@ -19,5 +24,6 @@ namespace Karaoke_project.Models
 
         public virtual Customer IdCusNavigation { get; set; }
         public virtual Room IdRoomNavigation { get; set; }
+        public virtual ICollection<BillDetail> BillDetails { get; set; }
     }
 }

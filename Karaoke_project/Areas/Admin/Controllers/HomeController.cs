@@ -89,16 +89,42 @@ namespace Karaoke_project.Areas.Admin.Controllers
             }
             dynamic json = JsonConvert.DeserializeObject(body);
             dynamic data = json.cus;
+
+            // Insert Customer
             Customer cus = new Customer();
             cus.Hoten = data.nameCus;
             cus.Phone = data.phoneCus;
-            Console.WriteLine("alo :" +data);
             await this.checkCus(cus);
             CustomersService dao = new CustomersService(_context);
-            Customer CusExist =  dao.getCustomerByPhone(cus.Phone);
-            
-            
 
+            // Insert Bill
+            Customer CusExist = dao.getCustomerByPhone((string)cus.Phone);
+            Bill bill = new Bill();
+            bill.CheckIn = data.checkIn;
+            bill.CheckOut = data.checkOut;
+            bill.CreateAt = DateTime.Now;
+            bill.DateBook = data.dateBook;
+            bill.IdCus = CusExist.Id;
+            bill.IdRoom = data.idRoom;
+            bill.Total = data.totalBook;
+            _context.Add(bill);
+            await _context.SaveChangesAsync();
+
+            // Insert Bill Detail
+            BillServices billServices = new BillServices(_context);
+            Bill BillExist = billServices.getBillByCreateAt(bill.CreateAt);
+            Console.WriteLine("Bill Ex" + BillExist);
+            
+            foreach (dynamic foo in data.foodBook)
+            {
+                BillDetail newBillDetail = new BillDetail();
+                newBillDetail.IdBill = BillExist.Id;
+                newBillDetail.IdFood = (int)foo.id;
+                newBillDetail.Quantity = (int)foo.quanBook;
+                Console.WriteLine("newBillDetail List : " + newBillDetail.IdFood);
+                _context.Add(newBillDetail);
+                await _context.SaveChangesAsync();
+            }
             return Json(new { status = "Success"});
         }
         public async Task checkCus(Customer cus)

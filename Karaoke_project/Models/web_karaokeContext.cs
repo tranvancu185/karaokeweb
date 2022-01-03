@@ -31,7 +31,7 @@ namespace Karaoke_project.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.\\Thai;Initial Catalog=web_karaoke;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=.\\SQLExpress;Initial Catalog=web_karaoke;Integrated Security=True");
             }
         }
 
@@ -80,9 +80,9 @@ namespace Karaoke_project.Models
 
             modelBuilder.Entity<BillDetail>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("billDetail");
+
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.IdBill).HasColumnName("idBill");
 
@@ -91,12 +91,12 @@ namespace Karaoke_project.Models
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
                 entity.HasOne(d => d.IdBillNavigation)
-                    .WithMany()
+                    .WithMany(p => p.BillDetails)
                     .HasForeignKey(d => d.IdBill)
                     .HasConstraintName("FK_billdetail_bill");
 
                 entity.HasOne(d => d.IdFoodNavigation)
-                    .WithMany()
+                    .WithMany(p => p.BillDetails)
                     .HasForeignKey(d => d.IdFood)
                     .HasConstraintName("FK_billdetail_food");
             });

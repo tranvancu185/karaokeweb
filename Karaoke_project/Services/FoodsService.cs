@@ -22,7 +22,7 @@ namespace Karaoke_project.Services
             return foodList;
         }
 
-        public List<Food> getListFoodByCat(int catId = 0)
+        public List<Food> getListFoodByCat(int catId )
         {
             List<Food> foodList = new List<Food>();
             foodList = _context.Foods.AsNoTracking().Where(x => x.IdCategory == catId).Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
@@ -31,8 +31,8 @@ namespace Karaoke_project.Services
 
         public Food getListFoodById(int id)
         {
-            Food foodList = _context.Foods.Include(f => f.IdCategoryNavigation).FirstOrDefault(m => m.Id == id);
-            return foodList;
+            Food food = _context.Foods.Include(f => f.IdCategoryNavigation).FirstOrDefault(m => m.Id == id);
+            return food;
         }
 
         

@@ -23,13 +23,13 @@
                         <form id="form-validation">
                             <div class="form-group">
                                 <label class="control-label">Tên khách hàng</label>
-                                <input id="name-cus" name="inputRequired" required class="form-control" />
-                                <span class="text-danger"></span>
+                                <input id="name-cus" class="form-control" />
+                                <span id="errorName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Số điện thoại</label>
-                                <input id="phone-cus" name="inputRequired" class="form-control" />
-                                <span class="text-danger"></span>
+                                <input id="phone-cus" class="form-control" />
+                                <span id="errorPhone" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Phòng đặt</label>
@@ -38,18 +38,18 @@
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Ngày đặt</label>
-                                <input placeholder="Select date" type="date" name="inputRequired" id="date-book" class="form-control">
-                                <span class="text-danger"></span>
+                                <input placeholder="Select date" type="date"  id="date-book" class="form-control">
+                                <span id="errorDate" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ đặt</label>
-                                <input class="form-control" type="time" name="inputRequired" id="timeBook" name="timepicker" value="00:00:00" placeholder="Enter Time" />
-                                <span class="text-danger"></span>
+                                <input class="form-control" type="time"  id="timeBook" name="timepicker" value="00:00:00" placeholder="Enter Time" />
+                                <span id="errorCheckIn" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ kết thúc</label>
                                 <input class="form-control" type="time" id="timeEndBook" value="00:00:00" name="timepicker" placeholder="Enter Time" />
-                                <span class="text-danger"></span>
+                                <span id="errorCheckOut" class="text-danger"></span>
                             </div>
                             <div class="form-group text-right">
                                 <button type="button" class="btn btn-primary" id="model-open" data-toggle="modal" data-target="#model-book-food">
@@ -58,7 +58,6 @@
                                 <input type="button" value="Save" class="btn btn-success form-group" onclick="submitBook()" />
                                 <span class="text-danger"></span>
                             </div>
-                     
                         </form>
                     </div>
                 </div>
@@ -110,6 +109,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- Modal -->
 <div class="container-fluid modal fade bd-example-modal-lg" id="model-book-food" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -198,12 +199,20 @@
         let count = [];
         var totalFood = 0;
         var totalBill = 0;
-
+        var today = new Date();
         $(document).ready(function () {
+
+            // Set default date book
+            
+            $("#date-book").val(convert(today))
+
+            //Open model
             getFood(0);
             jQuery('#model-open').click(() => {
                 count = [];
             })
+
+            // Filter categories food
             jQuery("#idCate").change(() => {
                 RoleID = $("#idCate :selected").val();
                 RoleID = parseFloat(RoleID);
@@ -211,6 +220,8 @@
                 $("#idCate > [value =" + RoleID + "]").attr("selected", "true");
                 getFood(RoleID);
             })
+
+            // filter table Food 
             $("#myInput").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
                 $("#tbody-model-table-foods tr").filter(function () {
@@ -219,6 +230,7 @@
             });
         })
 
+        // Function get List Food
         function getFood(RoleID) {
             $.ajax({
                 url: '/Admin/Home/GetFood',
@@ -256,6 +268,7 @@
             })
         }
 
+        // Function get Food by id and append food to table 
         function getFoodById(id) {
             $.ajax({
                 url: '/Admin/Home/GetFoodById',
@@ -267,7 +280,8 @@
                 async: true,
                 success: (results) => {
                     if (results.status == "Success") {
-                        let data = results.data.result;
+                        
+                        let data = results.data;
                         food.push(data);
                         let tr = "<tr id='tr" + data.id + "'>" +
                             "<td>" + data.name + "</td>" +
@@ -287,15 +301,47 @@
                 }
             })
         }
-        
+
+        // Function onclick submit form Book
         function submitBook() {
-            console.log(totalBill)
+            var error = "";
             var nameCus = $("#name-cus").val();
             var phoneCus = $("#phone-cus").val();
             var idRoom = $("#id-room :selected").val();
             var dateBook = $("#date-book").val();
             var checkIn = $("#timeBook").val()
             var checkOut = $("#timeEndBook").val()
+            date = new Date(dateBook)
+            if (!nameCus) {
+                error = "Thiếu thông tin tên khách hàng!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+            // validate phone number VietNam
+            if (validatePhone(phoneCus) != "") {
+                error = validatePhone(phoneCus);
+                alertify.notify(error, "error", 7)
+                return;
+            }
+            // validate date book
+            if (+date < +today) {
+                error = "Ngày đặt không hợp lệ!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            // validate start time < end time
+            var stt = new Date("November 13, 2013 " + checkIn);
+            stt = stt.getTime();
+            var endt = new Date("November 13, 2013 " + checkOut);
+            endt = endt.getTime();
+            if (stt > endt) {
+                error = "Giờ bắt đầu phải nhỏ hơn giờ kết thúc!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            // Data
             var cus = {
                 nameCus : nameCus,
                 phoneCus: phoneCus,
@@ -306,10 +352,10 @@
                 foodBook: food,
                 totalBook: totalBill
             };
-            console.log(cus)
             addCus(cus);
         }
 
+        // Function send data to BE to book
         function addCus(cus) {
             $.ajax({
                 url: '/Admin/Home/AddCus',
@@ -329,6 +375,7 @@
             })
         }
 
+        // Function book food
         function submitFood() {
             totalFood = 0;
             totalBill = 0;
@@ -350,6 +397,7 @@
             })
         }
 
+        // Function remove row in table book food
         function removeRow(id) {
             $('#tr' + id).remove();
             $("#btn" + id).removeAttr('disabled');

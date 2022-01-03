@@ -10,6 +10,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using PagedList.Core;
+using Karaoke_project.Services;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -35,14 +36,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
             var pageSize = 20;
 
             List<Food> web_karaokeContext = new List<Food>();
-
+            FoodsService FoodDAO = new FoodsService(_context);
             if (RoleID != 0)
             {
-                web_karaokeContext = _context.Foods.AsNoTracking().Where(x => x.IdCategory == RoleID).Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
+                web_karaokeContext = FoodDAO.getListFoodByCat(RoleID);
             }
             else
             {
-                web_karaokeContext = _context.Foods.AsNoTracking().Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
+                web_karaokeContext = FoodDAO.getListFood();
             }
             PagedList<Food> pagedList = new PagedList<Food>(web_karaokeContext.AsQueryable(), pageNumber, pageSize);
             ViewBag.CurrentPage = pageNumber;

@@ -64,7 +64,7 @@
                                     @item.Name
                                 </td>
                                 <td>
-                                    @item.Price.Value.ToString("#,##0") VNĐ
+                                    @String.Format("{0:0,0}", @item.Price) VNĐ
                                 </td>
                                 <td>
                                     @item.Quantity
@@ -82,13 +82,7 @@
                     }
                 </tbody>
             </table>
-            <div aria-label="Page navigation example" class="d-flex justify-content-end p-r-150">
-                <ul class="pagination">
-                    <pager class="pager-container text-right" list="@Model" asp-area="Admin" asp-controller="Foods" asp-action="Index" />
-                </ul>
-            </div>
         </div>
-
     </div>
 </div>
 
