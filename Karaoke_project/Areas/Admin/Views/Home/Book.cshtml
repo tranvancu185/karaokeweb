@@ -23,12 +23,12 @@
                         <form id="form-validation">
                             <div class="form-group">
                                 <label class="control-label">Tên khách hàng</label>
-                                <input id="name-cus" class="form-control" />
+                                <input id="name-cus" name="inputRequired" required class="form-control" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Số điện thoại</label>
-                                <input id="phone-cus" class="form-control" />
+                                <input id="phone-cus" name="inputRequired" class="form-control" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -38,24 +38,24 @@
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Ngày đặt</label>
-                                <input placeholder="Select date" type="date" id="date-book" class="form-control">
+                                <input placeholder="Select date" type="date" name="inputRequired" id="date-book" class="form-control">
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ đặt</label>
-                                <input class="form-control" type="text" id="timepicker" name="timepicker" placeholder="Enter Time" />
+                                <input class="form-control" type="time" name="inputRequired" id="timeBook" name="timepicker" value="00:00:00" placeholder="Enter Time" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ kết thúc</label>
-                                <input class="form-control" type="text" id="timepicker" name="timepicker" placeholder="Enter Time" />
+                                <input class="form-control" type="time" id="timeEndBook" value="00:00:00" name="timepicker" placeholder="Enter Time" />
                                 <span class="text-danger"></span>
                             </div>
                             <div class="form-group text-right">
                                 <button type="button" class="btn btn-primary" id="model-open" data-toggle="modal" data-target="#model-book-food">
                                     Đặt món ăn
                                 </button>
-                                <input type="button" value="Save" class="btn btn-success" onclick="submitBook()" />
+                                <input type="button" value="Save" class="btn btn-success form-group" onclick="submitBook()" />
                                 <span class="text-danger"></span>
                             </div>
                      
@@ -294,8 +294,8 @@
             var phoneCus = $("#phone-cus").val();
             var idRoom = $("#id-room :selected").val();
             var dateBook = $("#date-book").val();
-            var checkIn = "12:00:00"
-            var checkOut = "17:00:00"
+            var checkIn = $("#timeBook").val()
+            var checkOut = $("#timeEndBook").val()
             var cus = {
                 nameCus : nameCus,
                 phoneCus: phoneCus,
@@ -306,6 +306,7 @@
                 foodBook: food,
                 totalBook: totalBill
             };
+            console.log(cus)
             addCus(cus);
         }
 
@@ -361,6 +362,28 @@
         function addQuantity(id) {
             getFoodById(id)
         }
+
+        jQuery("#id-room").change(() => {
+            roomId = $("#id-room :selected").val();
+            roomId = parseFloat(roomId);
+            console.log(roomId)
+            $("#id-room > [value =" + roomId + "]").attr("selected", "true");
+            $.ajax({
+                url: '/Admin/Home/GetRoomById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: roomId
+                },
+                async: true,
+                success: (results) => {
+                    let data = results.data.result
+                    console.log(data)
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        })
     </script>
-}
 }

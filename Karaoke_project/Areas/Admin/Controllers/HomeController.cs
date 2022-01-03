@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Karaoke_project.Models;
+using Karaoke_project.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -42,17 +43,18 @@ namespace Karaoke_project.Areas.Admin.Controllers
 
         public IActionResult GetFood(int RoleID = 0)
         {
-            List<Food> web_karaokeContext = new List<Food>();
+            List<Food> foodList = new List<Food>();
+            FoodsService dao = new FoodsService(_context);
             if(RoleID == 0)
             {
-                web_karaokeContext = _context.Foods.AsNoTracking().Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.IdCategory).ToList();
+                foodList = dao.getListFood();
             }
             else
             {
-                web_karaokeContext = _context.Foods.AsNoTracking().Where(x => x.IdCategory == RoleID).Include(f => f.IdCategoryNavigation).OrderByDescending(x => x.Id).ToList();
+                foodList = dao.getListFoodByCat(RoleID);
             }
 
-            return Json(new { status = "Success", data = web_karaokeContext });
+            return Json(new { status = "Success", data = foodList });
         }
 
         public IActionResult GetFoodById(int id = 0)
@@ -61,8 +63,20 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return Json(new { status = "Failed"});
             }
-            var web_karaokeContext = _context.Foods.Include(f => f.IdCategoryNavigation).FirstOrDefaultAsync(m => m.Id == id);
-            return Json(new { status = "Success", data = web_karaokeContext });
+            FoodsService dao = new FoodsService(_context);
+            Food food = dao.getListFoodById(id);
+            return Json(new { status = "Success", data = food });
+        }
+
+        public IActionResult GetRoomById(int id = 0)
+        {
+            if (id == null)
+            {
+                return Json(new { status = "Failed" });
+            }
+            RoomsService dao = new RoomsService(_context);
+            var room = dao.getRoomById(id);
+            return Json(new { status = "Success", data = room });
         }
 
         [HttpPost]
@@ -79,14 +93,18 @@ namespace Karaoke_project.Areas.Admin.Controllers
             cus.Hoten = data.nameCus;
             cus.Phone = data.phoneCus;
             Console.WriteLine("alo :" +data);
-            this.checkCus(cus);
-
+            await this.checkCus(cus);
+            CustomersService dao = new CustomersService(_context);
+            Customer CusExist =  dao.getCustomerByPhone(cus.Phone);
+            
+            
 
             return Json(new { status = "Success"});
         }
         public async Task checkCus(Customer cus)
         {
-            Customer CusExist = _context.Customers.AsNoTracking().FirstOrDefault(x => x.Phone == cus.Phone);
+            CustomersService dao = new CustomersService(_context);
+            Customer CusExist = dao.getCustomerByPhone(cus.Phone);
             if (CusExist != null)
             {
             }
