@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -13,6 +14,7 @@ namespace Karaoke_project.Models
         }
 
         public int Id { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập tên loại thức ăn!")]
         public string Name { get; set; }
 
         public virtual ICollection<Food> Foods { get; set; }

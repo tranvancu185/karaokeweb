@@ -63,26 +63,68 @@
                 </div>
             </div>
         </div>
-        <!-- col-md-3 -->
+        <!-- Bill component -->
         <div class="col-md-5 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <div id="invoice" class="p-h-30">                
+                    <div id="invoice" class="p-h-30">
                         <div class="text-center text-uppercase">
                             <h2>Hóa đơn</h2>
                         </div>
-                        <div>
-                            <p>Tên khách hàng: </p>
-                            <p>Phòng đặt: </p>
-                            <p>Ngày đặt: </p>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Tên khách hàng:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p class="text-right"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Phòng đặt:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <p id="room-name-bill" class="text-center">Phòng 1</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p id="room-price-bill" class="text-right">65.000 VND / hour</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Giờ vào:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="time-book-bill" class="text-right"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Giờ ra:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="endtime-book-bill" class="text-right"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Tổng giờ:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="total-time" class="text-right">00:00</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Món ăn:</label>
+                            </div>
                         </div>
                         <div class="m-t-20">
                             <div class="table-responsive">
                                 <table class="table" id="table-bill">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Tên món ăn</th>                      
+                                            <th>Tên món ăn</th>
                                             <th>Giá tiền</th>
                                             <th>Số lượng</th>
                                             <th>Thành tiền</th>
@@ -95,10 +137,10 @@
                             <div class="row m-t-30 lh-1-8">
                                 <div class="col-sm-12">
                                     <div class="float-right text-right">
-                                        <p>Sub - Total amount: $2,325</p>
-                                        <p>vat (10%) : $232 </p>
+                                        <p id="priceRoom">Tiền giờ: 0 VND</p>
+                                        <p id="totalFood">Món ăn : 0 VND </p>
                                         <hr>
-                                        <h3><span class="font-weight-semibold text-dark">Total :</span> $2,557.00</h3>
+                                        <h3 id="total-price"><span class="font-weight-semibold text-dark">Total :</span></h3>
                                     </div>
                                 </div>
                             </div>
@@ -196,21 +238,24 @@
     <script>
         
         var food = [];
-        let count = [];
         var totalFood = 0;
         var totalBill = 0;
+        var priceRoom = 65000;
+        var totalRoom = 0;
         var today = new Date();
+
         $(document).ready(function () {
 
+            $("#total-price").text(convertVND(totalBill))
+
+            let checkIn = $('#timeBook').val();
+            $('#time-book-bill').text(checkIn)
+            let checkOut = $('#timeEndBook').val();
+            $('#endtime-book-bill').text(checkOut)
             // Set default date book
-            
             $("#date-book").val(convert(today))
 
-            //Open model
             getFood(0);
-            jQuery('#model-open').click(() => {
-                count = [];
-            })
 
             // Filter categories food
             jQuery("#idCate").change(() => {
@@ -221,6 +266,57 @@
                 getFood(RoleID);
             })
 
+            // Filter categories food
+            jQuery("#timeBook").change(() => {
+                let time = $('#timeBook').val();
+                $('#time-book-bill').text(time)
+                var checkOut = $("#timeEndBook").val()
+                // validate start time < end time
+                var stt = new Date("November 13, 2013 " + time);
+                stt = stt.getTime();
+                var endt = new Date("November 13, 2013 " + checkOut);
+                endt = endt.getTime();
+                if (stt > endt) {
+                    error = "Giờ bắt đầu phải nhỏ hơn giờ kết thúc!"
+                    alertify.notify(error, "error", 7)
+                    return;
+                }
+                
+            })
+
+            jQuery("#timeEndBook").change(() => {
+                totalRoom = 0;
+                let time = $('#timeEndBook').val();
+                $('#endtime-book-bill').text(time)
+                var checkIn = $("#timeBook").val()
+                // validate start time < end time
+                var stt = new Date("November 13, 2013 " + checkIn);
+                stt = stt.getTime();
+                var endt = new Date("November 13, 2013 " + time);
+                endt = endt.getTime();
+                if (stt > endt) {
+                    error = "Giờ bắt đầu phải nhỏ hơn giờ kết thúc!"
+                    alertify.notify(error, "error", 7)
+                    return;
+                }
+                let timetol = diff(checkIn, time)
+                totalRoom = setTotalPriceRoom(timetol, priceRoom)
+                $('#priceRoom').text("Tiền giờ: " + convertVND(totalRoom))
+                totalBill = totalFood + totalRoom
+                $("#total-price").text(convertVND(totalBill))
+            })
+
+            function totalBillSet() {
+                totalRoom = 0;
+                let time = $('#timeEndBook').val();
+                $('#endtime-book-bill').text(time)
+                var checkIn = $("#timeBook").val()
+                let timetol = diff(checkIn, time)
+                totalRoom = setTotalPriceRoom(timetol, priceRoom)
+                $('#priceRoom').text("Tiền giờ: " + convertVND(totalRoom))
+                totalBill = totalFood + totalRoom
+                $("#total-price").text(convertVND(totalBill))
+            }
             // filter table Food 
             $("#myInput").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
@@ -228,6 +324,34 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+
+            // function on change room selected
+            jQuery("#id-room").change(() => {
+                priceRoom = 0;
+                roomId = $("#id-room :selected").val();
+                roomId = parseFloat(roomId);
+                $("#id-room > [value =" + roomId + "]").attr("selected", "true");
+                $.ajax({
+                    url: '/Admin/Home/GetRoomById',
+                    dataType: "json",
+                    type: "GET",
+                    data: {
+                        id: roomId
+                    },
+                    async: true,
+                    success: (results) => {
+                        let data = results.data
+                        console.log(data)
+                        $('#room-name-bill').text(data.name)
+                        $('#room-price-bill').text(convertVND(data.price) + " / hour")
+                        priceRoom += data.price;
+                        totalBillSet()
+                    },
+                    error: (xhr) => {
+                        alert("Error");
+                    }
+                })
+            })
         })
 
         // Function get List Food
@@ -302,6 +426,14 @@
             })
         }
 
+        // Function get total price room calculate
+        function setTotalPriceRoom(timeTol, priceRoomtime) {
+            let timeTol1 = timeTol.split(":");
+            let price = 0;
+            price = (timeTol1[0] * priceRoomtime) + ((timeTol1[1] / 60) * priceRoomtime)
+            return price;
+        }
+
         // Function onclick submit form Book
         function submitBook() {
             var error = "";
@@ -311,18 +443,21 @@
             var dateBook = $("#date-book").val();
             var checkIn = $("#timeBook").val()
             var checkOut = $("#timeEndBook").val()
+            totalBill = totalFood + totalRoom
             date = new Date(dateBook)
             if (!nameCus) {
                 error = "Thiếu thông tin tên khách hàng!"
                 alertify.notify(error, "error", 7)
                 return;
             }
+
             // validate phone number VietNam
             if (validatePhone(phoneCus) != "") {
                 error = validatePhone(phoneCus);
                 alertify.notify(error, "error", 7)
                 return;
             }
+
             // validate date book
             if (+date < +today) {
                 error = "Ngày đặt không hợp lệ!"
@@ -340,7 +475,7 @@
                 alertify.notify(error, "error", 7)
                 return;
             }
-
+            
             // Data
             var cus = {
                 nameCus : nameCus,
@@ -367,7 +502,13 @@
                 }),
                 async: true,
                 success: (results) => {
-
+                    console.log(results)
+                    if (results.status == 'Failed') {
+                        alert(results.message)
+                    }
+                    else {
+                        alert("Book thành công")
+                    }
                 },
                 error: (xhr) => {
                     alert("Error");
@@ -378,7 +519,6 @@
         // Function book food
         function submitFood() {
             totalFood = 0;
-            totalBill = 0;
             $("#table-bill > tbody").empty();
             food.forEach((foo) => {
                 let idTr = $("input#quan" + foo.id).val();
@@ -386,15 +526,16 @@
                     foo.quanBook = idTr;
                 }
                 let tr = "<tr>" +
-                    "<td>" + foo.id + "</td>" +
                     "<td>" + foo.name + "</td>" +                  
                     "<td>" + foo.price + "</td><td>" + foo.quanBook + "</td>" +
                     "<td>" + foo.price * foo.quanBook + "</td>" +
                     "</tr >"
                 $('#table-bill > tbody:last').append(tr);
                 totalFood += (foo.price * foo.quanBook);
-                totalBill += totalFood
             })
+            $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
+            totalBill = totalFood + totalRoom
+            $("#total-price").text(convertVND(totalBill))
         }
 
         // Function remove row in table book food
@@ -411,27 +552,5 @@
             getFoodById(id)
         }
 
-        jQuery("#id-room").change(() => {
-            roomId = $("#id-room :selected").val();
-            roomId = parseFloat(roomId);
-            console.log(roomId)
-            $("#id-room > [value =" + roomId + "]").attr("selected", "true");
-            $.ajax({
-                url: '/Admin/Home/GetRoomById',
-                dataType: "json",
-                type: "GET",
-                data: {
-                    id: roomId
-                },
-                async: true,
-                success: (results) => {
-                    let data = results.data.result
-                    console.log(data)
-                },
-                error: (xhr) => {
-                    alert("Error");
-                }
-            })
-        })
     </script>
 }

@@ -82,6 +82,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCus()
         {
+            DateTime now = DateTime.Now;
             string body = "";
             using (StreamReader stream = new StreamReader(Request.Body))
             {
@@ -89,7 +90,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             }
             dynamic json = JsonConvert.DeserializeObject(body);
             dynamic data = json.cus;
-
             // Insert Customer
             Customer cus = new Customer();
             cus.Hoten = data.nameCus;
@@ -102,30 +102,45 @@ namespace Karaoke_project.Areas.Admin.Controllers
             Bill bill = new Bill();
             bill.CheckIn = data.checkIn;
             bill.CheckOut = data.checkOut;
-            bill.CreateAt = DateTime.Now;
+            bill.CreateAt = now;
             bill.DateBook = data.dateBook;
             bill.IdCus = CusExist.Id;
             bill.IdRoom = data.idRoom;
             bill.Total = data.totalBook;
-            _context.Add(bill);
-            await _context.SaveChangesAsync();
-
-            // Insert Bill Detail
             BillServices billServices = new BillServices(_context);
-            Bill BillExist = billServices.getBillByCreateAt(bill.CreateAt);
-            Console.WriteLine("Bill Ex" + BillExist);
-            
-            foreach (dynamic foo in data.foodBook)
+            bool checkBill = billServices.checkBookExist(bill);
+            if(checkBill == false)
             {
-                BillDetail newBillDetail = new BillDetail();
-                newBillDetail.IdBill = BillExist.Id;
-                newBillDetail.IdFood = (int)foo.id;
-                newBillDetail.Quantity = (int)foo.quanBook;
-                Console.WriteLine("newBillDetail List : " + newBillDetail.IdFood);
-                _context.Add(newBillDetail);
-                await _context.SaveChangesAsync();
+                _context.Add(bill);
+                _context.SaveChanges();
+                // Insert Bill Detail
+
+                Bill BillExist = billServices.getBillByCreateAt(bill.CreateAt);
+                Console.WriteLine("Bill ID " + bill.CreateAt);
+                if (BillExist.Id == 0)
+                {
+                    return Json(new { status = "Failed" });
+                }
+                else
+                {
+                    BillDetailSevices billDetailDAO = new BillDetailSevices(_context);
+                    foreach (dynamic foo in data.foodBook)
+                    {
+                        BillDetail newBillDetail = new BillDetail();
+                        newBillDetail.IdBill = BillExist.Id;
+                        newBillDetail.IdFood = (int)foo.id;
+                        newBillDetail.Quantity = (int)foo.quanBook;
+                        _context.Add(newBillDetail);
+                        _context.SaveChanges();
+                    }
+                }
+                return Json(new { status = "Success" });
             }
-            return Json(new { status = "Success"});
+            else
+            {
+                return Json(new { status = "Failed", message = "Phòng đã được book vào khung giờ này, vui lòng chọn khung giờ khác!" });
+            }
+            
         }
         public async Task checkCus(Customer cus)
         {
@@ -140,6 +155,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
             }
         }
+
         public IActionResult BookFood()
         {
             ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
