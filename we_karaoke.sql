@@ -68,7 +68,7 @@ create table billDetail(
 	CONSTRAINT FK_billdetail_bill FOREIGN KEY (idBill)REFERENCES bill(id),
 )
 
-drop table billDetail
+
 
 create table role(
 	id int identity(1,1) primary key,
