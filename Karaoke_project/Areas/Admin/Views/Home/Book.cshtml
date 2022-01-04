@@ -32,27 +32,27 @@
                                 <span id="errorPhone" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label class="control-label">Phòng đặt</label>
-                                <select id="id-room" name="txtNameCus" class="form-control" asp-items="ViewBag.Room"></select>
-                                <span class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label">Ngày đặt</label>
-                                <input placeholder="Select date" type="date"  id="date-book" class="form-control">
+                                <input placeholder="Select date" type="date" id="date-book" class="form-control">
                                 <span id="errorDate" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ đặt</label>
-                                <input class="form-control" type="time"  id="timeBook" name="timepicker" value="00:00:00" placeholder="Enter Time" />
+                                <input class="form-control" type="time" id="timeBook" name="timepicker" value="00:00:00" placeholder="Enter Time" />
                                 <span id="errorCheckIn" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Giờ kết thúc</label>
-                                <input class="form-control" type="time" id="timeEndBook" value="00:00:00" name="timepicker" placeholder="Enter Time" />
+                                <input class="form-control" type="time" id="timeEndBook" value="01:00:00" name="timepicker" placeholder="Enter Time" />
                                 <span id="errorCheckOut" class="text-danger"></span>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label">Phòng đặt</label>
+                                <select id="id-room" disabled name="txtNameCus" class="form-control"></select>
+                                <span class="text-danger"></span>
+                            </div>
                             <div class="form-group text-right">
-                                <button type="button" class="btn btn-primary" id="model-open" data-toggle="modal" data-target="#model-book-food">
+                                <button type="button" class="btn btn-primary form-group" id="model-open" data-toggle="modal" data-target="#model-book-food">
                                     Đặt món ăn
                                 </button>
                                 <input type="button" value="Save" class="btn btn-success form-group" onclick="submitBook()" />
@@ -257,6 +257,9 @@
 
             getFood(0);
 
+            let timeTotalDefault = diff(checkIn, checkOut)
+            $("#total-time").text(timeTotalDefault)
+
             // Filter categories food
             jQuery("#idCate").change(() => {
                 RoleID = $("#idCate :selected").val();
@@ -281,7 +284,7 @@
                     alertify.notify(error, "error", 7)
                     return;
                 }
-                
+                getRoomByTime();
             })
 
             jQuery("#timeEndBook").change(() => {
@@ -304,8 +307,15 @@
                 $('#priceRoom').text("Tiền giờ: " + convertVND(totalRoom))
                 totalBill = totalFood + totalRoom
                 $("#total-price").text(convertVND(totalBill))
+                getRoomByTime()
+                $("#total-time").text(timetol)
             })
 
+            jQuery("#date-book").change(() => {
+                getRoomByTime()
+            })
+
+            //Function set Total Bill
             function totalBillSet() {
                 totalRoom = 0;
                 let time = $('#timeEndBook').val();
@@ -317,6 +327,7 @@
                 totalBill = totalFood + totalRoom
                 $("#total-price").text(convertVND(totalBill))
             }
+
             // filter table Food 
             $("#myInput").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
@@ -459,7 +470,7 @@
             }
 
             // validate date book
-            if (+date < +today) {
+            if (+date <= +today.getDate()-1) {
                 error = "Ngày đặt không hợp lệ!"
                 alertify.notify(error, "error", 7)
                 return;
@@ -472,6 +483,12 @@
             endt = endt.getTime();
             if (stt > endt) {
                 error = "Giờ bắt đầu phải nhỏ hơn giờ kết thúc!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            if (!idRoom) {
+                error = "Vui lòng nhập thống tin phòng đặt!"
                 alertify.notify(error, "error", 7)
                 return;
             }
@@ -504,10 +521,10 @@
                 success: (results) => {
                     console.log(results)
                     if (results.status == 'Failed') {
-                        alert(results.message)
+                        alertify.notify(results.message, "error", 7)
                     }
                     else {
-                        alert("Book thành công")
+                        alertify.notify("Đặt phòng thành công!", "success", 7)
                     }
                 },
                 error: (xhr) => {
@@ -550,6 +567,53 @@
 
         function addQuantity(id) {
             getFoodById(id)
+        }
+
+        //Function get free time of room
+        function getRoomByTime() {
+            $('#id-room').empty();
+            let checkIn = $('#timeBook').val();
+            let checkOut = $('#timeEndBook').val();
+            var dateBook = $("#date-book").val();
+            $.ajax({
+                url: '/Admin/Home/getRoomByTime',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    dateBook: dateBook,
+                    checkIn: checkIn,
+                    checkOut: checkOut
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        let data = results.data.$values;
+                        console.log(results)
+                        if (data.length == 0 || data == null) {
+                            error = "Không có phòng trống!"
+                            alertify.notify(error, "error", 7)
+                        } else {
+                            data.forEach((ro) => {
+                                if (ro.typeRoom == 1) ro.typeRoom = "Phòng VIP"
+                                else if (ro.typeRoom == 2) ro.typeRoom = "Phòng cao cấp"
+                                else ro.typeRoom = "Phòng thường"
+                                $('#id-room').append($('<option>', {
+                                    value: ro.id,
+                                    text: ro.name + " - " + convertVND(ro.price) + " - " + ro.typeRoom
+                                }));
+                            })
+                            $('#id-room').removeAttr('disabled');
+                        }
+                    } else {
+                        error = "Không tìm được phòng!"
+                        alertify.notify(error, "error", 7)
+                    }
+                    console.log(results)
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
         }
 
     </script>

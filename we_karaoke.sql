@@ -14,8 +14,6 @@ create table users(
 	CONSTRAINT FK_user_role FOREIGN KEY (role)REFERENCES role(id)
 )
 
-drop table users
-
 create table customer(
 	id int Identity(1,1) primary key,
 	hoten nvarchar(50),
@@ -68,8 +66,6 @@ create table billDetail(
 	CONSTRAINT FK_billdetail_bill FOREIGN KEY (idBill)REFERENCES bill(id),
 )
 
-
-
 create table role(
 	id int identity(1,1) primary key,
 	name nvarchar(50)
@@ -82,10 +78,6 @@ insert into role values('admin'),(N'Kế toán'),(N'Nhân viên'),(N'Quản ly
 insert into users values('admin','admin','1','~/AdminAssets/images/avatars/thumb-3.jpg','admin','admin'),
 ('NV1',N'Phạm Duy Thái','3','~/AdminAssets/images/avatars/thumb-3.jpg','paduta','paduta'),
 ('KT1',N'Trần Phú Quý','2','~/AdminAssets/images/avatars/thumb-3.jpg','quy123','quy123')
-
-
-insert into customer values('ABC','091231233'),('asd','0123123123'),('aaa','213123123')
-
 
 insert into room values('Phong 1',0,60000,1),
 ('Phong 2',0,35000,3),
@@ -100,19 +92,8 @@ insert into category values(N'Nước giải khát'),
 (N'Các loại rượu bia'),
 (N'Trái cây')
 
-insert into food values(N'Cá Chưng',250000,20,'~/AdminAssets/images/avatars/thumb-3.jpg',2),
-(N'Bia',35000,100,'~/AdminAssets/images/avatars/thumb-3.jpg',4),
-('StrongBow',32000,132,'~/AdminAssets/images/avatars/thumb-3.jpg',4),
-('Coca',25000,200,'~/AdminAssets/images/avatars/thumb-3.jpg',1),
-('Snack',20000,100,'~/AdminAssets/images/avatars/thumb-3.jpg',3),
-(N'Trái cây đĩa',50000,59,'~/AdminAssets/images/avatars/thumb-3.jpg',5)
 
 
-insert into bill values('2021-07-03','2021-07-15','12:00:00','15:00:00',0,0,1,1),
-('2021-07-22','2021-07-25','12:00:00','15:00:00',0,0,3,1)
-
-insert into billDetail values(1,6,3)
-insert into billDetail values(2,7,10)
 
 
 

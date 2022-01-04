@@ -79,6 +79,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
             return Json(new { status = "Success", data = room });
         }
 
+        public IActionResult getRoomByTime(DateTime? dateBook, TimeSpan? checkIn, TimeSpan? checkOut)
+        {
+            RoomsService RoomDAO = new RoomsService(_context);
+            List<Room> roms = RoomDAO.checkRoomTime(dateBook, checkIn, checkOut);
+            return Json(new { status = "Success", data = roms });
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddCus()
         {
@@ -116,7 +123,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 // Insert Bill Detail
 
                 Bill BillExist = billServices.getBillByCreateAt(bill.CreateAt);
-                Console.WriteLine("Bill ID " + bill.CreateAt);
                 if (BillExist.Id == 0)
                 {
                     return Json(new { status = "Failed" });

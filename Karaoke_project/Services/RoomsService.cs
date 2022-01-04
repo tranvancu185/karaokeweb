@@ -20,5 +20,27 @@ namespace Karaoke_project.Services
             Room Exist = _context.Rooms.AsNoTracking().FirstOrDefault(x => x.Id == id);
             return Exist;
         }
+
+        public List<Room> getListRoom()
+        {
+            List<Room> listRoom = _context.Rooms.OrderByDescending(x => x.Id).ToList();
+            return listRoom;
+        }
+
+        public List<Room> checkRoomTime(DateTime? dateBook, TimeSpan? checkIn, TimeSpan? checkOut)
+        {
+            List<Bill> listBill = _context.Bills.OrderByDescending(x => x.Id).Where(x => x.CheckIn <= checkIn && x.CheckOut > checkIn && x.DateBook == dateBook).Include(f => f.IdRoomNavigation).ToList();
+            List<Room> roms = new List<Room>();
+            foreach (Bill bi in listBill)
+            {
+                roms.Add(bi.IdRoomNavigation);
+            }
+            List<Room> listRoom = this.getListRoom();
+            listRoom.RemoveAll(
+                x =>
+                roms.Any(
+                k => k.Id == x.Id));
+            return listRoom;
+        }
     }
 }

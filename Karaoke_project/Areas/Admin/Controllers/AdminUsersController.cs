@@ -44,12 +44,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 web_karaokeContext = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).OrderByDescending(x => x.Id).ToList();
             }
 
-            
             PagedList<User> pagedList = new PagedList<User>(web_karaokeContext.AsQueryable(), pageNumber, pageSize);
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name");
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentRoleID = RoleID;
-
             return View(pagedList);
         }
 
