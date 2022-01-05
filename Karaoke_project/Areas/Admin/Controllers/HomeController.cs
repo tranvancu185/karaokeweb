@@ -1,7 +1,9 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Karaoke_project.Models;
 using Karaoke_project.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,14 +29,27 @@ namespace Karaoke_project.Areas.Admin.Controllers
             _notyfService = notyfService;
             this._hostEnvironment = hostEnviroment;
         }
-
+        [AllowAnonymous]
+        [Route("dasboard", Name = "Dasboard")]
         public IActionResult Index()
         {
+            var userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View();
         }
 
         public IActionResult Book()
         {
+            var userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Room"] = new SelectList(_context.Rooms, "Id", "Name");
             return View();
@@ -168,5 +183,11 @@ namespace Karaoke_project.Areas.Admin.Controllers
             return View();
         }
 
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+
+        }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Karaoke_project.Models;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -15,6 +16,8 @@ namespace Karaoke_project.Areas.Admin.Controllers
     {
         private readonly web_karaokeContext _context;
         public INotyfService _notyfService { get; }
+
+        public string userId;
 
         public RoomsController(web_karaokeContext context, INotyfService notyfService)
         {
@@ -25,6 +28,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // GET: Admin/Rooms
         public async Task<IActionResult> Index()
         {
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(await _context.Rooms.ToListAsync());
         }
 
@@ -42,13 +51,24 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(room);
         }
 
         // GET: Admin/Rooms/Create
         public IActionResult Create()
         {
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View();
         }
 
@@ -66,6 +86,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 _notyfService.Success("Tạo mới thành công!");
                 return RedirectToAction(nameof(Index));
             }
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(room);
         }
 
@@ -82,6 +108,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(room);
         }
 
@@ -121,6 +153,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(room);
         }
 
@@ -138,7 +176,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(room);
         }
 

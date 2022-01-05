@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Karaoke_project.Models;
 
 #nullable disable
 
@@ -228,5 +229,7 @@ namespace Karaoke_project.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public DbSet<Karaoke_project.Models.Login> Login { get; set; }
     }
 }

@@ -65,9 +65,11 @@
                     </tbody>
                 </table>
                 <hr />
-                <div>
-                    <a asp-action="Index">Back to List</a>
-                </div>
+                @if(@ViewData["UserRole"].ToString() == "1") { 
+                    <div>
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                 }
             </div>
         </div>
     </div>

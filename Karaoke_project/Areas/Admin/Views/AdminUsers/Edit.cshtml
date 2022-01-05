@@ -41,17 +41,19 @@
                 <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" readonly asp-for="Id" />
-                    <div class="form-group">
-                        <label class="control-label">Họ tên</label>
-                        <input asp-for="Hoten" class="form-control" />
-                        <span asp-validation-for="Hoten" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="control-label">Phân quyền</label>
-                        <select asp-for="Role" class="form-control" asp-items="ViewBag.Role"></select>
-                        <span asp-validation-for="Role" class="text-danger"></span>
-                    </div>
+                    @if (@ViewData["UserRole"].ToString() == "1")
+                    {
+                        <div class="form-group">
+                            <label class="control-label">Họ tên</label>
+                            <input asp-for="Hoten" class="form-control" />
+                            <span asp-validation-for="Hoten" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Phân quyền</label>
+                            <select asp-for="Role" class="form-control" asp-items="ViewBag.Role"></select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+                    }
                     <div class="form-group">
                         <label class="control-label"></label>Avatar</br>
                         <div class="d-flex mt-2 align-items-end">
@@ -61,8 +63,13 @@
                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Save" class="btn btn-primary" /> |
-                        <a asp-action="Index">Back to List</a>
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                        @if (@ViewData["UserRole"].ToString() == "1")
+                        {
+                            <div>
+                                | <a asp-action="Index">Back to List</a>
+                            </div>
+                        }
                     </div>
                 </form>
             </div>

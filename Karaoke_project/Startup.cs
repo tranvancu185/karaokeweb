@@ -32,7 +32,7 @@ namespace Karaoke_project
             var stringConnectdb = Configuration.GetConnectionString("db");
             services.AddDbContext<web_karaokeContext>(options => options.UseSqlServer(stringConnectdb));
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] { UnicodeRanges.All }));
-
+            services.AddSession();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddNotyf(config => { config.DurationInSeconds = 10; config.IsDismissable = true; config.Position = NotyfPosition.BottomRight; });
             services.AddControllers().AddJsonOptions(x =>x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
@@ -54,7 +54,7 @@ namespace Karaoke_project
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();

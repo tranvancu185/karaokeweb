@@ -10,6 +10,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using PagedList.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -18,6 +19,8 @@ namespace Karaoke_project.Areas.Admin.Controllers
     {
         private readonly web_karaokeContext _context;
         public INotyfService _notyfService { get; }
+
+        public string userId;
 
         private readonly IWebHostEnvironment _hostEnvironment;
 
@@ -48,6 +51,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name");
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentRoleID = RoleID;
+
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(pagedList);
         }
 
@@ -64,6 +74,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // GET: Admin/AdminUsers/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             if (id == null)
             {
                 return NotFound();
@@ -83,6 +99,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // GET: Admin/AdminUsers/Create
         public IActionResult Create()
         {
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name");
             return View();
         }
@@ -137,6 +159,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 }
             }
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
+
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(user);
         }
 
@@ -154,6 +183,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(user);
         }
 
@@ -162,59 +197,68 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Hoten,Role,ImageFile")] User user)
+        public async Task<IActionResult> Edit(string id, User user)
         {
             if (id != user.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                    
-                    user.Username = imageModel.Username;
-                    user.Password = imageModel.Password;
-
-                    if (user.ImageFile == null )
-                    {
-                        user.Avatar = imageModel.Avatar;
-                    }
-                    else
-                    {
-                        string wwwRootPath = _hostEnvironment.WebRootPath;
-                        string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
-                        string extension = Path.GetExtension(user.ImageFile.FileName);
-                        user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
-                        string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
-                        using (var fileStream = new FileStream(path, FileMode.Create))
-                        {
-                            await user.ImageFile.CopyToAsync(fileStream);
-                        }
-                    }
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                    _context.ChangeTracker.Clear();
-                    _notyfService.Success("Cập nhật thành công!");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        _notyfService.Error("Cập nhật thất bại!");
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
+            try
+            {
+                User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+                user.Username = imageModel.Username;
+                user.Password = imageModel.Password;
+
+                if (signed.Role != 1)
+                {
+                    user.Hoten = imageModel.Hoten;
+                    user.Password = imageModel.Password;
+                    user.Role = imageModel.Role;
+                    user.RoleNavigation = imageModel.RoleNavigation;
+                }
+                if (user.ImageFile == null )
+                {
+                    user.Avatar = imageModel.Avatar;
+                }
+                else
+                {
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                    string extension = Path.GetExtension(user.ImageFile.FileName);
+                    user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                    string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await user.ImageFile.CopyToAsync(fileStream);
+                    }
+                }
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+                _context.ChangeTracker.Clear();
+                _notyfService.Success("Cập nhật thành công!");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.Id))
+                {
+                    _notyfService.Error("Cập nhật thất bại!");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            return RedirectToAction(nameof(Details));
+            }
             return View(user);
         }
 
@@ -233,7 +277,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             return View(user);
         }
 
