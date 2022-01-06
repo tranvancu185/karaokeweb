@@ -1,0 +1,257 @@
+﻿@model Karaoke_project.Models.Bill
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý đặt phòng</a>
+            <span class="breadcrumb-item active">Chi tiết thông tin đặt phòng</span>
+        </nav>
+    </div>
+</div>
+
+<!-- Bill component -->
+<div class="col-md-5 col-sm-12">
+    <div class="card">
+        <div class="card-body">
+            <div id="invoice" class="p-h-30">
+                <div class="text-center text-uppercase">
+                    <h2>Hóa đơn</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Tên khách hàng:</label>
+                    </div>
+                    <div class="col-md-7">
+                        <p class="text-right">@Model.IdCus</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Phòng đặt:</label>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="room-name-bill" class="text-center">@Model.IdRoom</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="room-price-bill" class="text-right">@String.Format("{0:0,0}", @Model.IdRoom) VND / hour</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Ngày đặt:</label>
+                    </div>
+                    <div class="col-md-7">
+                        @{var date = @Model.DateBook.ToString().Split(" ");}
+                        <p id="time-book-bill" class="text-right">@date[0]</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Giờ vào:</label>
+                    </div>
+                    <div class="col-md-7">
+                        <p id="time-book-bill" class="text-right">@Model.CheckIn</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Giờ ra:</label>
+                    </div>
+                    <div class="col-md-7">
+                        <p id="endtime-book-bill" class="text-right">@Model.CheckOut</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Tổng giờ:</label>
+                    </div>
+                    <div class="col-md-7">
+                        <p id="total-time" class="text-right">00:00</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Món ăn:</label>
+                    </div>
+                </div>
+                <div class="m-t-20">
+                    <div class="table-responsive">
+                        <table class="table" id="table-bill">
+                            <thead>
+                                <tr>
+                                    <th>Tên món ăn</th>
+                                    <th>Giá tiền</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-bill-table-foods">
+                                @foreach (Food item in ViewData["foodBill"] as IEnumerable<Karaoke_project.Models.Food>)
+                                {
+                                    @foreach (BillDetail bi in ViewData["foodDetail"] as IEnumerable<Karaoke_project.Models.BillDetail>)
+                                    {
+                                        @if (item.Id == bi.IdFood)
+                                        {
+
+                                            <tr id="tr-@item.Id" data-latitude="@item.Id" data-longitude="@bi.Quantity" data-foodName="@item.Name">
+                                                <td>@item.Name</td>
+                                                <td>@item.Price</td>
+                                                <td>@bi.Quantity<input type="hidden" id="quan-@item.Id" value="@bi.Quantity"> </td>
+                                                @{double? thanh = @item.Price * @bi.Quantity;}
+                                                <td>@String.Format("{0:0,0}", @thanh) </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row m-t-30 lh-1-8">
+                        <div class="col-sm-12">
+                            <div class="float-right text-right">
+                                <p id="priceRoom">Tiền giờ: 0 VND</p>
+                                <p id="totalFood">Món ăn : 0 VND </p>
+                                <hr>
+                                <h3 id="total-price"><span class="font-weight-semibold text-dark">Total :</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts{
+    <script>
+        var food = [];
+        var idRoom = @Model.IdRoom;
+        var totalFood = 0;
+        var totalBill = @Model.Total;
+        var checkIn = '@Model.CheckIn';
+        var checkOut = '@Model.CheckOut';
+        var priceRoom = 0;
+        var totalRoom = 0;
+        var today = new Date();
+        var FoodsArray = [];
+
+        
+        $('#tbody-bill-table-foods tr').each(function () {
+            let data = {
+                idFood: $(this).data('latitude'),
+                quan: $(this).data('longitude')
+            }
+            getFoodByIdNo(data.idFood, data.quan)
+            FoodsArray.push(data);
+        });
+
+        $(document).ready(function () {
+
+            $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
+            $.ajax({
+                url: '/Admin/Home/GetRoomById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: idRoom
+                },
+                async: true,
+                success: (results) => {
+                    let data = results.data
+                    $('#room-name-bill').text(data.name)
+                    $('#room-price-bill').text(convertVND(data.price) + " / hour")
+                    priceRoom = data.price;
+                    let timeTotalDefault = diff(checkIn, checkOut)
+                    $("#total-time").text(timeTotalDefault)
+                    totalRoom = setTotalPriceRoom(timeTotalDefault, priceRoom)
+                    $('#priceRoom').text("Tiền giờ: " + convertVND(totalRoom))
+                    totalBillSet()
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+
+            $("#total-price").text(convertVND(totalBill))
+
+            // Filter categories food
+            jQuery("#idCate").change(() => {
+                RoleID = $("#idCate :selected").val();
+                RoleID = parseFloat(RoleID);
+                $('#idCate option').removeAttr('selected');
+                $("#idCate > [value =" + RoleID + "]").attr("selected", "true");
+                getFood(RoleID);
+            })
+
+            //Function set Total Bill
+
+
+            // filter table Food
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tbody-model-table-foods tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            
+        })
+        
+        // Function book food
+        function submitFood() {
+            $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
+            totalBillSet()
+        }
+
+        function totalBillSet() {
+            totalBill = totalFood + totalRoom
+            $("#total-price").text(convertVND(totalBill))
+        }
+
+        // Function
+        function getFoodByIdNo(id,quan) {
+            $.ajax({
+                url: '/Admin/Home/GetFoodById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        let data = results.data;
+                        data.quanBook = quan
+                        totalFood += (data.price * data.quanBook);
+                        food.push(data);
+                        submitFood()
+                    } else {
+                        alert('No Food')
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+
+        // Function get total price room calculate
+        function setTotalPriceRoom(timeTol, priceRoomtime) {
+            let timeTol1 = timeTol.split(":");
+            let price = 0;
+            price = (timeTol1[0] * priceRoomtime) + ((timeTol1[1] / 60) * priceRoomtime)
+            return price;
+        }
+
+    </script>
+}

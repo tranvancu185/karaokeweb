@@ -1,0 +1,104 @@
+﻿@model IEnumerable<Karaoke_project.Models.Bill>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý đặt phòng</a>
+            <a class="breadcrumb-item active" asp-action="Index">Danh sách phòng đã đặt</a>
+        </nav>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="text-center">DANH SÁCH HÓA ĐƠN ĐẶT BÀN</h1>
+        <div class="table-responsive">
+            <table class="table table-hover e-commerce-table">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            Thời gian tạo
+                        </th>
+                        <th scope="col">
+                            Ngày đặt
+                        </th>
+                        <th scope="col">
+                            Giờ bắt đầu
+                        </th>
+                        <th scope="col">
+                            Giờ kết thúc
+                        </th>
+                        <th scope="col">
+                            Tổng giá tiền
+                        </th>
+                        <th scope="col">
+                            Trạng thái
+                        </th>
+                        <th scope="col">
+                            Tên khách hàng
+                        </th>
+                        <th scope="col">
+                            Phòng đặt
+                        </th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.CreateAt.ToString()
+                            </td>
+                            <td>
+                                @{var date = item.DateBook.ToString().Split(" ");}
+                                @date[0]
+                            </td>
+                            <td>
+                                @item.CheckIn.ToString()
+                            </td>
+                            <td>
+                                @item.CheckOut.ToString()
+                            </td>
+                            <td>
+                                @String.Format("{0:0,0}", item.Total) VND
+                            </td>
+                            <td>
+                                @if (item.Status != 0)
+                                {
+                                    <div class="d-flex align-items-center">
+                                        <div class="badge badge-success badge-dot m-r-10"></div>
+                                        <div>In Stock</div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="d-flex align-items-center">
+                                        <div class="badge badge-danger badge-dot m-r-10"></div>
+                                        <div>Out of Stock</div>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IdCusNavigation.Hoten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IdRoomNavigation.Name)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

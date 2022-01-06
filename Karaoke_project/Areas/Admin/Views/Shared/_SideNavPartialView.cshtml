@@ -14,7 +14,7 @@
             <li class="nav-item dropdown">
                 <a class="dropdown-toggle" href="javascript:void(0);">
                     <span class="icon-holder">
-                        <i class="anticon anticon-lock"></i>
+                        <i class="anticon anticon-calendar"></i>
                     </span>
                     <span class="title">Quản lý đặt phòng</span>
                     <span class="arrow">
@@ -23,7 +23,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a asp-area="Admin" asp-controller="Home" asp-action="Index">Danh sách phòng đã đặt</a>
+                        <a asp-area="Admin" asp-controller="Bills" asp-action="Index">Danh sách phòng đã đặt</a>
                     </li>
                     <li>
                         <a asp-area="Admin" asp-controller="Home" asp-action="Book">Đặt phòng</a>
@@ -39,9 +39,9 @@
                     <span class="title">Quản lý phòng karaoke</span>
                 </a>
             </li>
+            <!-- Quản lý quyền truy cập -->
             @if (@ViewData["UserRole"].ToString() == "1")
             {
-                <!-- Quản lý quyền truy cập -->
                 <li class="nav-item dropdown">
                     <a class="dropdown-toggle" href="javascript:void(0);">
                         <span class="icon-holder">

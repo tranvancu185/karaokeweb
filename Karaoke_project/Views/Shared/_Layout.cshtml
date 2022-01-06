@@ -24,31 +24,49 @@
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/styles.css">
+
     <!-- Core css -->
     <link href="~/AdminAssets/css/app.min.css" rel="stylesheet">
     <link href="~/AdminAssets/css/styles.css" rel="stylesheet">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Karaoke_project</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Admin">Admin</a>
-                        </li>
-                    </ul>
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <div class="container d-flex">
+                <a class="navbar-brand" href="#">
+                    <img id="icon" src="https://th.bing.com/th/id/R.57c9cd52cdc5fd3cd1e3949d42912f21?rik=YWveODCOpBcWZQ&riu=http%3a%2f%2fblog.vso-software.fr%2fwp-content%2fuploads%2f2016%2f11%2fSnap7322.jpg&ehk=sZoqzn4pKogiwss1pvYByYi%2bSKjbnrPiBcx7b8a%2fEkA%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1" alt="">
+                    <span class="mx-3 mt-5"><b>KING KARAOKE</b></span>
+                </a>
+                <div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-right">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="About.html">Về chúng tôi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#menu">Thực đơn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#price">Bảng giá</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Admin">Bảng giá</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </nav>
+        <!--End Navbar-->
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -56,11 +74,30 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - Karaoke_project - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+    <!--Footer Component-->
+    <div class="container-fluid mt-3 __footer">
+        <div class="row">
+            <div class="container">
+                <div class="row mt-2">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 col-sm-12 align-self-center text-white">
+                        Đồ án Karaoke này hoàn thành bởi
+                    </div>
+                    <div class="col-md-3 col-sm-12 text-white">
+                        <p>Trần Phú Quý - 51702165</p>
+                        <p>Phạm Duy Thái - 51702180</p>
+                    </div>
+                    <div class="col-md-3 col-sm-12 text-white">
+                        <p>Lê Minh Hiếu - </p>
+                        <p>Thành - </p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
+    <!--End Footer Component-->
+
     <!-- main JS -->
     <script src="~/AdminAssets/js/main.js"></script>
 

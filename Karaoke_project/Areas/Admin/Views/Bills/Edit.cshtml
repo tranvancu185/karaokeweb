@@ -1,0 +1,611 @@
+﻿@model Karaoke_project.Models.Bill
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item" asp-action="Index">Quản lý đặt phòng</a>
+            <span class="breadcrumb-item active">Chỉnh sửa thông tin đặt phòng</span>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row padding">
+        <!-- col-md-9 -->
+        <div class="col-md-7 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="text-center">THÊM THÔNG TIN ĐẶT PHÒNG</h1>
+                    <div class="table-responsive" style="padding-top: 20px">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+                            <div class="form-group">
+                                <label asp-for="Status" class="control-label"></label>
+                                <input asp-for="Status" class="form-control" />
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                            <button type="button" class="btn btn-primary form-group" id="model-open" data-toggle="modal" data-target="#model-book-food">
+                                Đặt món ăn
+                            </button>
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-primary" /> |
+                                <a asp-action="Index">Back to List</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bill component -->
+        <div class="col-md-5 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="invoice" class="p-h-30">
+                        <div class="text-center text-uppercase">
+                            <h2>Hóa đơn</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Tên khách hàng:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p class="text-right">@Model.IdCus</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Phòng đặt:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <p id="room-name-bill" class="text-center">@Model.IdRoom</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p id="room-price-bill" class="text-right">@String.Format("{0:0,0}", @Model.IdRoom) VND / hour</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Ngày đặt:</label>
+                            </div>
+                            <div class="col-md-7">
+                                @{var date = @Model.DateBook.ToString().Split(" ");}
+                                <p id="time-book-bill" class="text-right">@date[0]</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Giờ vào:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="time-book-bill" class="text-right">@Model.CheckIn</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Giờ ra:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="endtime-book-bill" class="text-right">@Model.CheckOut</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Tổng giờ:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="total-time" class="text-right">00:00</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Món ăn:</label>
+                            </div>
+                        </div>
+                        <div class="m-t-20">
+                            <div class="table-responsive">
+                                <table class="table" id="table-bill">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên món ăn</th>
+                                            <th>Giá tiền</th>
+                                            <th>Số lượng</th>
+                                            <th>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach(Food item in ViewData["foodBill"] as IEnumerable<Karaoke_project.Models.Food>) { 
+                                            @foreach(BillDetail bi in ViewData["foodDetail"] as IEnumerable<Karaoke_project.Models.BillDetail>) {
+                                                @if (item.Id == bi.IdFood) {
+                                                    
+                                                    <tr>
+                                                        <td>@item.Name</td>
+                                                        <td>@item.Price</td>
+                                                        <td>@bi.Quantity </td>
+                                                         @{double? thanh = @item.Price * @bi.Quantity;}
+                                                        <td>@String.Format("{0:0,0}", @thanh) </td>
+                                                    </tr>
+                                                }
+                                             }
+                                         } 
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row m-t-30 lh-1-8">
+                                <div class="col-sm-12">
+                                    <div class="float-right text-right">
+                                        <p id="priceRoom">Tiền giờ: 0 VND</p>
+                                        <p id="totalFood">Món ăn : 0 VND </p>
+                                        <hr>
+                                        <h3 id="total-price"><span class="font-weight-semibold text-dark">Total :</span></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="container-fluid modal fade bd-example-modal-lg" id="model-book-food" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="modal-dialog modal-dialog-centered modal-xl model-food" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Đặt món ăn</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 pt-3">
+                            <div class="d-md-flex">
+                                <input id="myInput" type="text" placeholder="Search.." class="w-75">
+                            </div>
+                        </div>
+                        <div class="col-lg-1"></div>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#ID</th>
+                                    <th scope="col">Tên món ăn</th>
+                                    <th scope="col">Giá tiền</th>
+                                    <th scope="col">Số lượng</th>
+                                    <th scope="col">Loại</th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-model-table-foods" style="overflow-y: scroll;">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="submitFood()" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="modal-dialog-centered" style="height:80%; width:100%; margin-right:20px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body table-responsive">
+                        <table class="table" id="book-food-detail">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Tên món ăn</th>
+                                    <th scope="col">Giá tiền</th>
+                                    <th scope="col">Số lượng</th>
+                                    <th scope="col">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-model-table-foods" style="overflow-y: scroll;">
+                                @foreach (Food item in ViewData["foodBill"] as IEnumerable<Karaoke_project.Models.Food>)
+                                {
+                                    @foreach (BillDetail bi in ViewData["foodDetail"] as IEnumerable<Karaoke_project.Models.BillDetail>)
+                                    {
+                                        @if (item.Id == bi.IdFood)
+                                        {
+                                            <tr id="tr-@item.Id" data-latitude="@item.Id" data-longitude="@bi.Quantity" data-foodName="@item.Name">
+                                                <td>@item.Name</td>
+                                                <td>@item.Price</td>
+                                                <td><input id="quan{@item.Id}" type='text' value='@bi.Quantity' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'/></td>
+                                                <td><button type='button' onClick='removeRow(@item.Id)' class='btn btn-danger btn-tone'>Xóa</button></td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var food = [];
+        var idRoom = @Model.IdRoom;
+        var totalFood =0;
+        var totalBill = @Model.Total;
+        var checkIn = '@Model.CheckIn';
+        var checkOut = '@Model.CheckOut';
+        var priceRoom = 0;
+        var totalRoom = 0;
+        var today = new Date();
+        var FoodsArray = [];
+
+        $('#tbody-model-table-foods tr').each(function () {
+            let data = {
+                idFood: $(this).data('latitude'),
+                quan: $(this).data('longitude')
+            }
+            getFoodByIdNo(data.idFood,data.quan)
+            FoodsArray.push(data);
+            console.log(food)
+        });
+
+        $(document).ready(function () {
+            $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
+            $.ajax({
+                url: '/Admin/Home/GetRoomById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: idRoom
+                },
+                async: true,
+                success: (results) => {
+                    let data = results.data
+                    console.log(data)
+                    $('#room-name-bill').text(data.name)
+                    $('#room-price-bill').text(convertVND(data.price) + " / hour")
+                    priceRoom = data.price;
+                    let timeTotalDefault = diff(checkIn, checkOut)
+                    $("#total-time").text(timeTotalDefault)
+                    totalRoom = setTotalPriceRoom(timeTotalDefault, priceRoom)
+                    $('#priceRoom').text("Tiền giờ: " + convertVND(totalRoom))
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+
+            $("#total-price").text(convertVND(totalBill))
+
+            getFood(0);
+
+            // Filter categories food
+            jQuery("#idCate").change(() => {
+                RoleID = $("#idCate :selected").val();
+                RoleID = parseFloat(RoleID);
+                $('#idCate option').removeAttr('selected');
+                $("#idCate > [value =" + RoleID + "]").attr("selected", "true");
+                getFood(RoleID);
+            })
+
+            //Function set Total Bill
+            
+
+            // filter table Food
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#tbody-model-table-foods tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        })
+
+        function totalBillSet() {
+            totalBill = totalFood + totalRoom
+            $("#total-price").text(convertVND(totalBill))
+        }
+
+        // Function get List Food
+        function getFood(RoleID) {
+
+            $.ajax({
+                url: '/Admin/Home/GetFood',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    RoleID: RoleID
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        $("#tbody-model-table-foods").empty();
+                        let data = results.data.$values;
+                        data.forEach((foo) => {
+                            foo.status = (foo.quantity != 0) ? 'Còn hàng' : 'Hết hàng';
+                            let tr =
+                                "<tr>" +
+                                    "<td scope ='col'>" + foo.id + "</td>" +
+                                    "<td>" + foo.name + "</td>" +
+                                    "<td>" + foo.price + "</td>" +
+                                    "<td>" + foo.quantity + "</td >" +
+                                    "<td>" + foo.idCategoryNavigation.name + "</td>" +
+                                    "<td>" + foo.status + "</td>" +
+                                    "<td>" +
+                                        "<button id='btn" + foo.id + "' type='button' onClick='addQuantity(" + foo.id + ")' class='btn btn-primary'>Thêm</button>" +
+                                    "</td>" +
+                                "</tr > "
+                            $('#myTable > tbody:last').append(tr);
+                            FoodsArray.forEach((e) => {
+                                if (e.idFood == foo.id) {
+                                    $('button#btn' + foo.id).attr('disabled', 'disabled');
+                                }
+                            })
+                        })
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+        // Function
+        function getFoodByIdNo(id,quan) {
+            $.ajax({
+                url: '/Admin/Home/GetFoodById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        let data = results.data;
+                        data.quanBook = quan
+                        food.push(data);
+                    } else {
+                        alert('No Food')
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+        // Function get Food by id and append food to table
+        function getFoodById(id) {
+            $.ajax({
+                url: '/Admin/Home/GetFoodById',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        let data = results.data;
+                        food.push(data);
+                        let tr = "<tr id='tr" + data.id + "'>" +
+                            "<td>" + data.name + "</td>" +
+                            "<td>" + data.price + "</td><td><input id='quan" + data.id + "' type='text' value='1' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'></td>" +
+                            "<td><button type='button' onClick='removeRow(" + data.id + ")' class='btn btn-danger btn-tone'>Xóa</button></td>" +
+                            "</tr >"
+                        $('#book-food-detail > tbody:last').append(tr);
+                        $('button#btn' + data.id).attr('disabled', 'disabled');
+                    } else {
+                        alert('No Food')
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+
+        // Function get total price room calculate
+        function setTotalPriceRoom(timeTol, priceRoomtime) {
+            let timeTol1 = timeTol.split(":");
+            let price = 0;
+            price = (timeTol1[0] * priceRoomtime) + ((timeTol1[1] / 60) * priceRoomtime)
+            return price;
+        }
+
+        // Function onclick submit form Book
+        function submitBook() {
+            var error = "";
+            var nameCus = $("#name-cus").val();
+            var phoneCus = $("#phone-cus").val();
+            var idRoom = $("#id-room :selected").val();
+            var dateBook = $("#date-book").val();
+            var checkIn = $("#timeBook").val()
+            var checkOut = $("#timeEndBook").val()
+            totalBill = totalFood + totalRoom
+            date = new Date(dateBook)
+            if (!nameCus) {
+                error = "Thiếu thông tin tên khách hàng!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            // validate phone number VietNam
+            if (validatePhone(phoneCus) != "") {
+                error = validatePhone(phoneCus);
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            // validate date book
+            if (+date <= +today.getDate()-1) {
+                error = "Ngày đặt không hợp lệ!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            // validate start time < end time
+            var stt = new Date("November 13, 2013 " + checkIn);
+            stt = stt.getTime();
+            var endt = new Date("November 13, 2013 " + checkOut);
+            endt = endt.getTime();
+            if (stt > endt) {
+                error = "Giờ bắt đầu phải nhỏ hơn giờ kết thúc!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            if (!idRoom) {
+                error = "Vui lòng nhập thống tin phòng đặt!"
+                alertify.notify(error, "error", 7)
+                return;
+            }
+
+            // Data
+            var cus = {
+                nameCus : nameCus,
+                phoneCus: phoneCus,
+                idRoom : idRoom,
+                dateBook: dateBook,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                foodBook: food,
+                totalBook: totalBill
+            };
+            addCus(cus);
+        }
+
+        // Function send data to BE to book
+        function addCus(cus) {
+            $.ajax({
+                url: '/Admin/Home/AddCus',
+                dataType: "json",
+                contentType: "application/json",
+                type: "POST",
+                data: JSON.stringify({
+                    cus: cus
+                }),
+                async: true,
+                success: (results) => {
+                    console.log(results)
+                    if (results.status == 'Failed') {
+                        alertify.notify(results.message, "error", 7)
+                    }
+                    else {
+                        alertify.notify("Đặt phòng thành công!", "success", 7)
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+
+        // Function book food
+        function submitFood() {
+            console.log(food)
+            totalFood = 0;
+            $("#table-bill > tbody").empty();
+            food.forEach((foo) => {
+                let idTr = $("input#quan" + foo.id).val();
+                if (idTr) {
+                    foo.quanBook = idTr;
+                }
+                let tr = "<tr>" +
+                    "<td>" + foo.name + "</td>" +
+                    "<td>" + foo.price + "</td><td>" + foo.quanBook + "</td>" +
+                    "<td>" + foo.price * foo.quanBook + "</td>" +
+                    "</tr >"
+                $('#table-bill > tbody:last').append(tr);
+                totalFood += (foo.price * foo.quanBook);
+                console.log(totalFood)
+            })
+            $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
+            totalBill = totalFood + totalRoom
+            $("#total-price").text(convertVND(totalBill))
+            totalBillSet()
+            
+        }
+
+        // Function remove row in table book food
+        function removeRow(id) {
+            console.log(id)
+            $('#tr' + id).remove();
+            $('#tr-' + id).remove();
+            $("#btn" + id).removeAttr('disabled');
+
+            food = jQuery.grep(food, function (value) {
+                return value.id != id;
+            });
+        }
+
+        function addQuantity(id) {
+            getFoodById(id)
+        }
+
+        //Function get free time of room
+        function getRoomByTime() {
+            $('#id-room').empty();
+            let checkIn = $('#timeBook').val();
+            let checkOut = $('#timeEndBook').val();
+            var dateBook = $("#date-book").val();
+            $.ajax({
+                url: '/Admin/Home/getRoomByTime',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    dateBook: dateBook,
+                    checkIn: checkIn,
+                    checkOut: checkOut
+                },
+                async: true,
+                success: (results) => {
+                    if (results.status == "Success") {
+                        let data = results.data.$values;
+                        console.log(results)
+                        if (data.length == 0 || data == null) {
+                            error = "Không có phòng trống!"
+                            alertify.notify(error, "error", 7)
+                        } else {
+                            data.forEach((ro) => {
+                                if (ro.typeRoom == 1) ro.typeRoom = "Phòng VIP"
+                                else if (ro.typeRoom == 2) ro.typeRoom = "Phòng cao cấp"
+                                else ro.typeRoom = "Phòng thường"
+                                $('#id-room').append($('<option>', {
+                                    value: ro.id,
+                                    text: ro.name + " - " + convertVND(ro.price) + " - " + ro.typeRoom
+                                }));
+                            })
+                            $('#id-room').removeAttr('disabled');
+                        }
+                    } else {
+                        error = "Không tìm được phòng!"
+                        alertify.notify(error, "error", 7)
+                    }
+                    console.log(results)
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            })
+        }
+
+    </script>
+}

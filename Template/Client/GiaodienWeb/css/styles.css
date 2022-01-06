@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Licorice&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+html {
+    scroll-behavior: smooth;
+}
+nav {
+    text-transform: uppercase;
+}
+#icon {
+    border-radius: 50%;
+    width: 50px;
+}
+   
+
+body  {
+    background-color: #cccccc;
+}
+
+.__img-slider {
+    width: 100%;
+    height: 700px;
+    object-fit: contain;
+}
+
+.__footer {
+    height: auto;
+    background-color: black;
+}
