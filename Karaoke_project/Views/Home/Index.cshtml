@@ -28,30 +28,6 @@
 </div>
 <!--End Slider Component-->
 <!--Content-->
-<div class="container-fluid mt-5">
-    <div class="row">
-        <ul id="responsive">
-            <li><img src="~/image/image1.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image2.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image3.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image1.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image2.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image3.jpg" class="d-block w-100" alt=""></li>
-        </ul>
-    </div>
-    <div class="row mt-3">
-        <ul id="lightSlider">
-            <li><img src="~/image/image1.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image2.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image3.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image1.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image2.jpg" class="d-block w-100" alt=""></li>
-            <li><img src="~/image/image3.jpg" class="d-block w-100" alt=""></li>
-        </ul>
-    </div>
-
-
-</div>
 
 <div class="container mt-5 __content">
 
@@ -169,36 +145,7 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-            $("#lightSlider").lightSlider();
-        });
-
-        $(document).ready(function () {
-            $('#responsive').lightSlider({
-                item: 4,
-                loop: false,
-                slideMove: 2,
-                easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
-                speed: 600,
-                responsive: [
-                    {
-                        breakpoint: 800,
-                        settings: {
-                            item: 3,
-                            slideMove: 1,
-                            slideMargin: 6,
-                        }
-                    },
-                    {
-                        breakpoint: 480,
-                        settings: {
-                            item: 2,
-                            slideMove: 1
-                        }
-                    }
-                ]
-            });
-        });
+       
     </script>
 }
 <!--End Price Component-->

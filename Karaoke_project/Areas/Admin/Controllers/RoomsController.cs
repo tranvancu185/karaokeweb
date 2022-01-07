@@ -26,9 +26,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms
+        [Route("list-phong.html", Name = "ListRoom")]
         public async Task<IActionResult> Index()
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -38,20 +43,24 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms/Details/5
+        [Route("chi-tiet-phong.html", Name = "DetailRoom")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             var room = await _context.Rooms
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (room == null)
             {
                 return NotFound();
             }
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -64,6 +73,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -102,13 +115,16 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             var room = await _context.Rooms.FindAsync(id);
             if (room == null)
             {
                 return NotFound();
             }
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -169,14 +185,17 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             var room = await _context.Rooms
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (room == null)
             {
                 return NotFound();
             }
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;

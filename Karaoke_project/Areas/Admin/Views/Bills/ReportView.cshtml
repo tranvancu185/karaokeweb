@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "ReportView";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item active ">Báo cáo thống kê</a>
+        </nav>
+    </div>
+</div>
+<div class="ct-chart ct-golden-section" id="simple-line-chart" data-high=""></div>
+<div class="container">
+    <div class="row padding">
+        
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            
+
+            $.ajax({
+                url: '/Admin/Bills/getTotalSum',
+                dataType: "json",
+                type: "GET",
+                async: true,
+                success: (results) => {
+                    let label = [];
+                    let value = [];
+                    let data = results.data.$values
+                    console.log(data)
+                    data.sort((a, b) => parseFloat(a.total) - parseFloat(b.total));
+                    console.log(data)
+                    data.forEach((e) => {
+
+                        let name = convertDMY(new Date(e.name));
+                        let val = e.total;
+                        label.push(name)
+                        value.push(val)
+                    })
+                    new Chartist.Line('#simple-line-chart', {
+                        labels: label,
+                        series: [
+                            {
+                                value
+                            }
+                        ]
+                    }, {
+                        low: 0,
+                        
+                        showArea: true,
+                        fullWidth: true,
+                        chartPadding: {
+                            right: 100
+                        }
+
+                    });
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            });
+        });
+
+    </script>
+}

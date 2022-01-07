@@ -6,27 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Karaoke_project.Models;
+using Microsoft.AspNetCore.Hosting;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class CustomersController : Controller
     {
         private readonly web_karaokeContext _context;
-
         public string userId;
+        private readonly IWebHostEnvironment _hostEnvironment;
         public INotyfService _notyfService { get; }
-
-        public CategoriesController(web_karaokeContext context, INotyfService notyfService)
+        public CustomersController(web_karaokeContext context, INotyfService notyfService, IWebHostEnvironment hostEnviroment)
         {
             _context = context;
             _notyfService = notyfService;
+            this._hostEnvironment = hostEnviroment;
         }
 
-        // GET: Admin/Categories
-        [Route("list-kho.html", Name = "ListKho")]
+        // GET: Admin/Customers
+        [Route("list-customer.html", Name = "ListCus")]
         public async Task<IActionResult> Index()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -39,11 +40,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-            return View(await _context.Categories.ToListAsync());
+            List<Customer> list = _context.Customers.ToList();
+            
+            return View(list);
         }
 
-        // GET: Admin/Categories/Details/5
-        [Route("chi-tiet-kho.html", Name = "DetailKho")]
+        // GET: Admin/Customers/Details/5
+        [Route("chi-tiet-customer.html", Name = "DetailCus")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,22 +58,22 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
             }
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-            return View(category);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
         }
 
-        // GET: Admin/Categories/Create
+        // GET: Admin/Customers/Create
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -86,31 +89,26 @@ namespace Karaoke_project.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: Admin/Categories/Create
+        // POST: Admin/Customers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Hoten,Phone")] Customer customer)
         {
             if (ModelState.IsValid)
             {
-
-                _context.Add(category);
+                Customer userExist = _context.Customers.AsNoTracking().FirstOrDefault(x => x.Phone == customer.Phone);
+                if(userExist != null) _notyfService.Error("Khách hàng đã tồn tại!");
+                _context.Add(customer);
                 await _context.SaveChangesAsync();
-                _notyfService.Success("Tạo mới thành công!");
+                _notyfService.Success("Thêm khách hàng thành công!");
                 return RedirectToAction(nameof(Index));
             }
-            userId = HttpContext.Session.GetString("UserId");
-            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
-            ViewData["UserAvatar"] = signed.Avatar;
-            ViewData["UserRole"] = signed.Role;
-            ViewData["UserName"] = signed.Hoten;
-            ViewData["UserId"] = signed.Id;
-            return View(category);
+            return View(customer);
         }
 
-        // GET: Admin/Categories/Edit/5
+        // GET: Admin/Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,46 +120,42 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
             }
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-            return View(category);
+            var customer = await _context.Customers.FindAsync(id);
+            _notyfService.Success("Sửa thông tin khách hàng thành công!");
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
         }
 
-        // POST: Admin/Categories/Edit/5
+        // POST: Admin/Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Hoten,Phone")] Customer customer)
         {
-            if (id != category.Id)
+            if (id != customer.Id)
             {
-                _notyfService.Error("Cập nhật thất bại!");
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-
-                    _context.Update(category);
+                    _context.Update(customer);
                     await _context.SaveChangesAsync();
-                    _notyfService.Success("Cập nhật thành công!");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!CustomerExists(customer.Id))
                     {
-                        _notyfService.Error("Cập nhật thất bại!");
                         return NotFound();
                     }
                     else
@@ -171,16 +165,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            userId = HttpContext.Session.GetString("UserId");
-            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
-            ViewData["UserAvatar"] = signed.Avatar;
-            ViewData["UserRole"] = signed.Role;
-            ViewData["UserName"] = signed.Hoten;
-            ViewData["UserId"] = signed.Id;
-            return View(category);
+            return View(customer);
         }
 
-        // GET: Admin/Categories/Delete/5
+        // GET: Admin/Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -192,35 +180,36 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
             }
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-            return View(category);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            
+            return View(customer);
         }
 
-        // POST: Admin/Categories/Delete/5
+        // POST: Admin/Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
+            var customer = await _context.Customers.FindAsync(id);
+            _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
-            _notyfService.Success("Xóa thành công!");
+            _notyfService.Success("Xóa khách hàng thành công!");
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool CustomerExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.Customers.Any(e => e.Id == id);
         }
     }
 }

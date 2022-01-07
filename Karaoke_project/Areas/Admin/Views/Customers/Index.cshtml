@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Karaoke_project.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <a class="breadcrumb-item " asp-action="Index">Quản lý Khách hàng</a>
+            <a class="breadcrumb-item active" asp-action="Index">Danh sách khách hàng</a>
+        </nav>
+    </div>
+</div>
+<div class="container-fluid" style="padding-top: 20px">
+    <div class="page-header no-gutters has-tab">
+        <h1 class="text-center">DANH SÁCH KHÁCH HÀNG</h1>
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#ID</th>
+                        <th scope="col">Họ tên</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col" class="colActive">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model)
+                        {
+                    <tr>
+                        <th scope="row">@item.Id</th>
+                        <td>
+                            @item.Hoten
+                        </td>
+                        <td>
+                            @item.Phone
+                        </td>
+                        <td class="colActive">
+                            <a class="btn btn-success btn-tone m-r-5 " asp-area="Admin" asp-controller="Customers" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a class="btn btn-primary btn-tone m-r-5 " asp-area="Admin" asp-controller="Customers" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a class="btn btn-danger btn-tone m-r-5 " asp-area="Admin" asp-controller="Customers" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

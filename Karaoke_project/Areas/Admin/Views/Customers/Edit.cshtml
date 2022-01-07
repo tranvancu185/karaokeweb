@@ -1,4 +1,4 @@
-﻿@model Karaoke_project.Models.Category
+﻿@model Karaoke_project.Models.Customer
 
 @{
     ViewData["Title"] = "Edit";
@@ -9,22 +9,28 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
-            <a class="breadcrumb-item" asp-action="Index">Quản lý loại món ăn</a>
-            <span class="breadcrumb-item active">Cập nhật loại món ăn</span>
+            <a class="breadcrumb-item " asp-action="Index">Quản lý Khách hàng</a>
+            <a class="breadcrumb-item active" asp-action="Index">Sửa thông tin khách hàng</a>
         </nav>
     </div>
 </div>
 <div class="container-fluid" style="padding-top: 20px">
     <div class="card">
         <div class="card-body">
-            <h1 class="text-center">CẬP NHẬT LOẠI THỨC ĂN</h1>
+            <h1 class="text-center">CẬP NHẬT THÔNG TIN KHÁCH HÀNG</h1>
             <div class="table-responsive">
                 <form asp-action="Edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
                     <div class="form-group">
-                        <label class="control-label">Tên phòng</label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <label asp-for="Hoten" class="control-label"></label>
+                        <input asp-for="Hoten" class="form-control" />
+                        <span asp-validation-for="Hoten" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Phone" class="control-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Save" class="btn btn-primary" /> |

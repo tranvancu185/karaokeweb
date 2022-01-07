@@ -38,7 +38,7 @@
         <div class="card-body">
             <h1 class="text-center"></h1>
             <div class="table-responsive">
-                <form asp-action="Edit" enctype="multipart/form-data">
+                <form asp-action="Edit" asp-controller="AdminUsers" asp-area="Admin"  enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" readonly asp-for="Id" />
                     @if (@ViewData["UserRole"].ToString() == "1")

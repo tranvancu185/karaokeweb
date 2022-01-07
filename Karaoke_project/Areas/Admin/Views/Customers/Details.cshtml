@@ -1,4 +1,4 @@
-﻿@model Karaoke_project.Models.Category
+﻿@model Karaoke_project.Models.Customer
 
 @{
     ViewData["Title"] = "Details";
@@ -9,20 +9,23 @@
     <div class="header-sub-title">
         <nav class="breadcrumb breadcrumb-dash">
             <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
-            <a class="breadcrumb-item" asp-action="Index">Quản lý loại món ăn</a>
-            <span class="breadcrumb-item active">Xem chi tiết loại món ăn</span>
+            <a class="breadcrumb-item " asp-action="Index">Quản lý Khách hàng</a>
+            <a class="breadcrumb-item active" asp-action="Index">Chi tiết khách hàng</a>
         </nav>
     </div>
 </div>
 <div class="container-fluid" style="padding-top: 20px">
-
     <div class="page-header no-gutters has-tab">
-        <h1 class="text-center">CHI TIẾT LOẠI THỨC ĂN</h1>
+        <h1 class="text-center">CHI TIẾT KHÁCH HÀNG</h1>
         <table class="product-info-table m-t-20">
             <tbody>
                 <tr>
                     <td>Họ tên:</td>
-                    <td class="text-dark font-weight-semibold">@Model.Name</td>
+                    <td class="text-dark font-weight-semibold">@Html.DisplayFor(model => model.Hoten)</td>
+                </tr>
+                <tr>
+                    <td>Số điện thoại:</td>
+                    <td class="text-dark font-weight-semibold">@Html.DisplayFor(model => model.Phone)</td>
                 </tr>
             </tbody>
         </table>

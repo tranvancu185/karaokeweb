@@ -63,6 +63,13 @@ function convert(str) {
     return [date.getFullYear(), mnth, day].join("-");
 }
 
+function convertDMY(str) {
+    var date = new Date(str),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+    return [day, mnth, date.getFullYear()].join("/");
+}
+
 
 function convertVND(price) {
     return price.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
@@ -85,5 +92,12 @@ function diff(start, end) {
     return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
 }
 
+function formatTime(e) {
+    let hour = "";
+    let min = "";
+    hour = (e.hours >= 10) ? e.hours : "0" + e.hours;
+    min = (e.minutes >= 10) ? e.minutes : "0" + e.minutes;
+    return hour + ":" + min
+}
 
 

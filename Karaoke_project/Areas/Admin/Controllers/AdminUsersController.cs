@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using PagedList.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -32,8 +33,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers
+        [Route("list-User.html", Name = "ListUser")]
         public IActionResult Index(int page=1, int RoleID =0)
         {
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             var pageNumber = page;
             var pageSize = 20;
             List<User> web_karaokeContext = new List<User>();
@@ -52,7 +59,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentRoleID = RoleID;
 
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -72,9 +78,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Details/5
+        [Route("chi-tiet-User.html", Name = "DetailUser")]
         public async Task<IActionResult> Details(string id)
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -100,6 +111,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -184,6 +199,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
             }
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -199,10 +218,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, User user)
         {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
 
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
             userId = HttpContext.Session.GetString("UserId");
@@ -211,54 +226,38 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-            try
-            {
-                User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
-                user.Username = imageModel.Username;
+            user.Username = imageModel.Username;
+            user.Password = imageModel.Password;
+
+            if (signed.Role != 1)
+            {
+                user.Hoten = imageModel.Hoten;
                 user.Password = imageModel.Password;
-
-                if (signed.Role != 1)
-                {
-                    user.Hoten = imageModel.Hoten;
-                    user.Password = imageModel.Password;
-                    user.Role = imageModel.Role;
-                    user.RoleNavigation = imageModel.RoleNavigation;
-                }
-                if (user.ImageFile == null )
-                {
-                    user.Avatar = imageModel.Avatar;
-                }
-                else
-                {
-                    string wwwRootPath = _hostEnvironment.WebRootPath;
-                    string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
-                    string extension = Path.GetExtension(user.ImageFile.FileName);
-                    user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
-                    string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await user.ImageFile.CopyToAsync(fileStream);
-                    }
-                }
-                _context.Update(user);
-                await _context.SaveChangesAsync();
-                _context.ChangeTracker.Clear();
-                _notyfService.Success("Cập nhật thành công!");
+                user.Role = imageModel.Role;
+                user.RoleNavigation = imageModel.RoleNavigation;
             }
-            catch (DbUpdateConcurrencyException)
+            if (user.ImageFile == null )
             {
-                if (!UserExists(user.Id))
-                {
-                    _notyfService.Error("Cập nhật thất bại!");
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            return RedirectToAction(nameof(Details));
+                user.Avatar = imageModel.Avatar;
             }
+            else
+            {
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
+                string extension = Path.GetExtension(user.ImageFile.FileName);
+                user.Avatar = fileName + DateTime.Now.ToString("yyymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/image/avatar/" + user.Avatar);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await user.ImageFile.CopyToAsync(fileStream);
+                }
+            }
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            _context.ChangeTracker.Clear();
+            _notyfService.Success("Cập nhật thành công!");
             return View(user);
         }
 
@@ -269,7 +268,11 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             var user = await _context.Users
                 .Include(f => f.RoleNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -277,7 +280,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            userId = HttpContext.Session.GetString("UserId");
+            
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;

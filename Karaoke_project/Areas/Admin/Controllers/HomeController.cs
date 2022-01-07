@@ -21,6 +21,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         private readonly web_karaokeContext _context;
+        public string userId;
         public INotyfService _notyfService { get; }
         private readonly IWebHostEnvironment _hostEnvironment;
         public HomeController(web_karaokeContext context, INotyfService notyfService, IWebHostEnvironment hostEnviroment)
@@ -34,6 +35,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -41,10 +46,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserId"] = signed.Id;
             return View();
         }
-
+        [Route("dat-phong.html", Name = "BookPhong")]
         public IActionResult Book()
         {
-            var userId = HttpContext.Session.GetString("UserId");
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;

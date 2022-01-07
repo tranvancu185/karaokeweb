@@ -51,12 +51,14 @@
                             <td>Phân quyền::</td>
                             @if (Model.Role == 1)
                             {
-                                <td>Kế toán</td>
+                                <td>Admin</td>
                             }
                             @if (Model.Role == 2)
                             {
-                                <td>Nhân viên</td>
+                                <td>Kế toán</td>
                             }
+                            @if(Model.Role == 3) { <td>Nhân viên</td>}
+                            @if(Model.Role == 4) { <td>Quản lý</td>}
                         </tr>
                         <tr>
                             <td>Username:</td>

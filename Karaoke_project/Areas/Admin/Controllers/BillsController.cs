@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Karaoke_project.Models;
 using Microsoft.AspNetCore.Http;
+using Karaoke_project.Services;
+using System.IO;
+using Newtonsoft.Json;
+using System.Threading;
+using Rotativa;
 
 namespace Karaoke_project.Areas.Admin.Controllers
 {
@@ -21,22 +26,37 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Bills
+        [Route("hoa-don-list.html", Name = "DanhSachHoaDon")]
         public async Task<IActionResult> Index()
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-            var web_karaokeContext = _context.Bills.Include(b => b.IdCusNavigation).Include(b => b.IdRoomNavigation);
+
+            DateTime dt = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(dt.Year, dt.Month, 1);
+            DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            
+            var web_karaokeContext = _context.Bills.Include(b => b.IdCusNavigation).Include(b => b.IdRoomNavigation).Where(x=>x.DateBook>= firstDayOfMonth && x.DateBook <= lastDayOfMonth);
             return View(await web_karaokeContext.ToListAsync());
         }
 
         // GET: Admin/Bills/Details/5
+        [Route("hoa-don-detail.html", Name = "ChiTietHoaDon")]
         public async Task<IActionResult> Details(int? id)
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -68,9 +88,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Bills/Create
+
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -89,6 +114,11 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CreateAt,DateBook,CheckIn,CheckOut,Total,Status,IdRoom,IdCus")] Bill bill)
         {
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(bill);
@@ -98,7 +128,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["IdCus"] = new SelectList(_context.Customers, "Id", "Hoten", bill.IdCus);
             ViewData["IdRoom"] = new SelectList(_context.Rooms, "Id", "Name", bill.IdRoom);
 
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -108,8 +137,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Bills/Edit/5
+
         public async Task<IActionResult> Edit(int? id)
         {
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             if (id == null)
             {
                 return NotFound();
@@ -134,7 +169,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["IdCus"] = new SelectList(_context.Customers, "Id", "Hoten", bill.IdCus);
             ViewData["IdRoom"] = new SelectList(_context.Rooms, "Id", "Name", bill.IdRoom);
 
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -147,49 +181,57 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Status,IdRoom,IdCus")] Bill bill)
+        public async Task<IActionResult> Edit()
         {
-            if (id != bill.Id)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            string body = "";
+            using (StreamReader stream = new StreamReader(Request.Body))
             {
-                try
-                {
-                    _context.Update(bill);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BillExists(bill.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                body = await stream.ReadToEndAsync();
             }
+            dynamic json = JsonConvert.DeserializeObject(body);
+            dynamic data = json.cus;
+            Console.WriteLine("OKe" + data);
+
+            // Update data Bill
+            BillServices dao = new BillServices(_context);
+            Bill bill = dao.getBillById((int)data.idBill);
+
+            //Update data Bill Detail
+            BillDetailSevices billDetailDAO = new BillDetailSevices(_context);
+            bool check =  billDetailDAO.deleteBillDetailRange(bill.Id);
+            bill.Status = data.status;
+            bill.Total = data.totalBook;
+            await dao.updateBill(bill);
+            foreach (dynamic foo in data.foodBook)
+            {
+                BillDetail newBillDetail = new BillDetail();
+                newBillDetail.IdBill = bill.Id;
+                newBillDetail.IdFood = (int)foo.id;
+                newBillDetail.Quantity = (int)foo.quanBook;
+                _context.BillDetails.Add(newBillDetail);
+                Thread.Sleep(500);
+            }
+            _context.SaveChanges();
+
             userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
-
-            ViewData["IdCus"] = new SelectList(_context.Customers, "Id", "Hoten", bill.IdCus);
-            ViewData["IdRoom"] = new SelectList(_context.Rooms, "Id", "Name", bill.IdRoom);
-            return View(bill);
+            return Json(new { status = "Success" });
         }
 
         // GET: Admin/Bills/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
             if (id == null)
             {
                 return NotFound();
@@ -203,7 +245,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -217,6 +258,8 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            BillDetailSevices dao = new BillDetailSevices(_context);
+            bool check = dao.deleteBillDetailRange(id);
             var bill = await _context.Bills.FindAsync(id);
             _context.Bills.Remove(bill);
             await _context.SaveChangesAsync();
@@ -226,6 +269,54 @@ namespace Karaoke_project.Areas.Admin.Controllers
         private bool BillExists(int id)
         {
             return _context.Bills.Any(e => e.Id == id);
+        }
+
+        public IActionResult getRoomByTime(DateTime? startDate, DateTime? endDate)
+        {
+            BillServices BillDAO = new BillServices(_context);
+            List<Bill> BillList = BillDAO.getBillStartEnd(startDate, endDate);
+            return Json(new { status = "Success", data = BillList });
+        }
+
+        public IActionResult getBillStartEnd(DateTime? startDate, DateTime? endDate)
+        {
+            List<Bill> listBill = new List<Bill>();
+            if (startDate > endDate)
+            {
+                return Json(new { status = "Failed", message = "Ngày kết thúc phải lớn hơn ngày bắt đầu!" });
+            }
+            else
+            {
+                BillServices BillDAO = new BillServices(_context);
+                listBill = BillDAO.getBillStartEnd(startDate, endDate);
+            }
+            return Json(new { status = "Success", data = listBill });
+        }
+
+        [Route("bao-cao.html", Name = "Report")]
+        public IActionResult ReportView()
+        {
+            userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home", new { area = "" });
+            }
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
+            return View();
+        }
+
+        public IActionResult getTotalSum()
+        {
+            var sells = _context.Bills.GroupBy(a => a.DateBook).Select(a => new { total = a.Sum(b => b.Total), Name = a.Key }).OrderByDescending(a => a.Name).ToList();
+            foreach (var bi in sells)
+            {
+                Console.WriteLine(bi.Name + " " + bi.total);
+            }
+            return Json(new { status = "Success", data = sells });
         }
     }
 }

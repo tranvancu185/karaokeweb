@@ -18,7 +18,23 @@
     <div class="card-body">
         <h1 class="text-center">DANH SÁCH HÓA ĐƠN ĐẶT BÀN</h1>
         <div class="table-responsive">
-            <table class="table table-hover e-commerce-table">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">Start Date</label>
+                        <input placeholder="Select date" type="date" id="start-date" class="form-control">
+                        <span id="errorDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="control-label">End Date</label>
+                        <input placeholder="Select date" type="date" id="end-date" class="form-control">
+                        <span id="errorDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <table id="listBill" class="table table-hover e-commerce-table">
                 <thead>
                     <tr>
                         <th scope="col">
@@ -48,10 +64,10 @@
                         <th>Thao tác</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="rowBill">
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr id="bill-@item.Id" data-id="@item.Id" data-customer="@item.IdCusNavigation.Hoten" data-room="@item.IdRoomNavigation.Name">
                             <td>
                                 @item.CreateAt.ToString()
                             </td>
@@ -60,27 +76,29 @@
                                 @date[0]
                             </td>
                             <td>
-                                @item.CheckIn.ToString()
+                                @{var checkIn = item.CheckIn.ToString().Split(":");}
+                                @checkIn[0]:@checkIn[1]
                             </td>
                             <td>
-                                @item.CheckOut.ToString()
+                                @{var checkOut = item.CheckOut.ToString().Split(":");}
+                                @checkOut[0]:@checkOut[1]
                             </td>
                             <td>
                                 @String.Format("{0:0,0}", item.Total) VND
                             </td>
                             <td>
-                                @if (item.Status != 0)
+                                @if (item.Status == 0)
                                 {
                                     <div class="d-flex align-items-center">
                                         <div class="badge badge-success badge-dot m-r-10"></div>
-                                        <div>In Stock</div>
+                                        <div>Đã thanh toán</div>
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="d-flex align-items-center">
                                         <div class="badge badge-danger badge-dot m-r-10"></div>
-                                        <div>Out of Stock</div>
+                                        <div>Chưa thanh toán</div>
                                     </div>
                                 }
                             </td>
@@ -91,9 +109,9 @@
                                 @Html.DisplayFor(modelItem => item.IdRoomNavigation.Name)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                <a class='btn btn-success btn-tone m-r-5' asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a class='btn btn-primary btn-tone m-r-5' asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a class='btn btn-danger btn-tone m-r-5' asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                             </td>
                         </tr>
                     }
@@ -102,3 +120,109 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        var billArray = [];
+        $('#rowBill tr').each(function () {
+            let data = {
+                id: $(this).data('id'),
+                customer: $(this).data('customer'),
+                room: $(this).data('room')
+            }
+            billArray.push(data)
+        });
+        console.log(billArray)
+
+        $(document).ready(function () {
+            $("#start-date").val(convert(firstDay));
+            $("#end-date").val(convert(lastDay));
+
+            jQuery("#end-date").change(() => {
+                searchBillStartEnd()
+            })
+            jQuery("#start-date").change(() => {
+                searchBillStartEnd()
+            })
+        });
+
+
+        function searchBillStartEnd() {
+            var startDate = $("#start-date").val();
+            var endDate = $("#end-date").val();
+            $("#rowBill").empty();
+            $.ajax({
+                url: '/Admin/Bills/getBillStartEnd',
+                dataType: "json",
+                type: "GET",
+                data: {
+                    startDate: startDate,
+                    endDate: endDate
+                },
+                async: true,
+                success: (results) => {
+                    console.log(results)
+                    if (results.status == "Failed") {
+                        alertify.notify(results.message, "error", 7)
+                    } else {
+                        let data = results.data.$values
+                        billArray.forEach((b) => {
+                            data.forEach((e) => {
+                                if (b.id == e.id) {
+                                    let createAt = convertDMY(new Date(e.createAt));
+                                    let dateBook = convertDMY(new Date(e.dateBook));
+                                    let checkIn = formatTime(e.checkIn)
+                                    let checkOut = formatTime(e.checkOut)
+                                    let totalPrice = convertVND(e.total)
+                                    let nameCus = b.customer
+                                    let nameRoom = b.room
+                                    let tr =
+                                        "<tr>" +
+                                            "<td>" + createAt + "</td>" +
+                                            "<td>" + dateBook + "</td>" +
+                                            "<td>" + checkIn + "</td>" +
+                                            "<td>" + checkOut + "</td>" +
+                                            "<td>" + totalPrice + "</td>"+
+                                            "<td>" + statusChange(e.status) + "</td>" +
+                                            "<td>" + nameCus + "</td>" +
+                                            "<td>" + nameRoom + "</td>" +
+                                            "<td>" +
+                                                "<a class='btn btn-success btn-tone m-r-5' asp-action='Details' asp-route-id='" + e.id + "'>Details</a> |" +
+                                                "<a class='btn btn-primary btn-tone m-r-5' asp-action='Edit' asp-route-id='" + e.id + "'>Edit</a> |" +
+                                                "<a class='btn btn-danger btn-tone m-r-5' asp-action='Delete' asp-route-id='" + e.id + "'>Delete</a> |"+
+                                            "</td>" +
+                                        "</tr> "
+                                    console.log(tr)
+                                    $('#listBill > tbody:last').append(tr);
+                                }
+                            })
+                        })
+                    }
+                },
+                error: (xhr) => {
+                    alert("Error");
+                }
+            });
+        }
+
+        function statusChange(status) {
+            let div = ""
+            if (status == 0) {
+                div = "<div class='d-flex align-items-center'>" +
+                    "<div class='badge badge-danger badge-dot m-r-10'></div>" +
+                    "<div>Chưa thanh toán</div>" +
+                    "</div>"
+
+            } else {
+                div = "<div class='d-flex align-items-center'>"+
+                    "<div class='badge badge-success badge-dot m-r-10' ></div >"+
+                    "<div>Đã thanh toán</div>"+
+                    "</div >"
+            }
+            return div
+        }
+    </script>
+}

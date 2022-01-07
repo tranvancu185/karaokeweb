@@ -16,110 +16,117 @@
     </div>
 </div>
 
-<!-- Bill component -->
-<div class="col-md-5 col-sm-12">
-    <div class="card">
-        <div class="card-body">
-            <div id="invoice" class="p-h-30">
-                <div class="text-center text-uppercase">
-                    <h2>Hóa đơn</h2>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Tên khách hàng:</label>
-                    </div>
-                    <div class="col-md-7">
-                        <p class="text-right">@Model.IdCus</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label>Phòng đặt:</label>
-                    </div>
-                    <div class="col-md-4">
-                        <p id="room-name-bill" class="text-center">@Model.IdRoom</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p id="room-price-bill" class="text-right">@String.Format("{0:0,0}", @Model.IdRoom) VND / hour</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Ngày đặt:</label>
-                    </div>
-                    <div class="col-md-7">
-                        @{var date = @Model.DateBook.ToString().Split(" ");}
-                        <p id="time-book-bill" class="text-right">@date[0]</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Giờ vào:</label>
-                    </div>
-                    <div class="col-md-7">
-                        <p id="time-book-bill" class="text-right">@Model.CheckIn</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Giờ ra:</label>
-                    </div>
-                    <div class="col-md-7">
-                        <p id="endtime-book-bill" class="text-right">@Model.CheckOut</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Tổng giờ:</label>
-                    </div>
-                    <div class="col-md-7">
-                        <p id="total-time" class="text-right">00:00</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Món ăn:</label>
-                    </div>
-                </div>
-                <div class="m-t-20">
-                    <div class="table-responsive">
-                        <table class="table" id="table-bill">
-                            <thead>
-                                <tr>
-                                    <th>Tên món ăn</th>
-                                    <th>Giá tiền</th>
-                                    <th>Số lượng</th>
-                                    <th>Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-bill-table-foods">
-                                @foreach (Food item in ViewData["foodBill"] as IEnumerable<Karaoke_project.Models.Food>)
-                                {
-                                    @foreach (BillDetail bi in ViewData["foodDetail"] as IEnumerable<Karaoke_project.Models.BillDetail>)
-                                    {
-                                        @if (item.Id == bi.IdFood)
-                                        {
+<div class="row">
+    <div class="col-md-3">
 
-                                            <tr id="tr-@item.Id" data-latitude="@item.Id" data-longitude="@bi.Quantity" data-foodName="@item.Name">
-                                                <td>@item.Name</td>
-                                                <td>@item.Price</td>
-                                                <td>@bi.Quantity<input type="hidden" id="quan-@item.Id" value="@bi.Quantity"> </td>
-                                                @{double? thanh = @item.Price * @bi.Quantity;}
-                                                <td>@String.Format("{0:0,0}", @thanh) </td>
-                                            </tr>
+    </div>
+    <div class="col-md-5">
+        <!-- Bill component -->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="invoice" class="p-h-30">
+                        <div class="text-center text-uppercase">
+                            <h2>Hóa đơn</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Tên khách hàng:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p class="text-right">@Model.IdCus</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Phòng đặt:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <p id="room-name-bill" class="text-center">@Model.IdRoom</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p id="room-price-bill" class="text-right">@String.Format("{0:0,0}", @Model.IdRoom) VND / hour</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Ngày đặt:</label>
+                            </div>
+                            <div class="col-md-7">
+                                @{var date = @Model.DateBook.ToString().Split(" ");}
+                                <p id="time-book-bill" class="text-right">@date[0]</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Giờ vào:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="time-book-bill" class="text-right">@Model.CheckIn</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Giờ ra:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="endtime-book-bill" class="text-right">@Model.CheckOut</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Tổng giờ:</label>
+                            </div>
+                            <div class="col-md-7">
+                                <p id="total-time" class="text-right">00:00</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Món ăn:</label>
+                            </div>
+                        </div>
+                        <div class="m-t-20">
+                            <div class="table-responsive">
+                                <table class="table" id="table-bill">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên món ăn</th>
+                                            <th>Giá tiền</th>
+                                            <th>Số lượng</th>
+                                            <th>Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-bill-table-foods">
+                                        @foreach (Food item in ViewData["foodBill"] as IEnumerable<Karaoke_project.Models.Food>)
+                                        {
+                                            @foreach (BillDetail bi in ViewData["foodDetail"] as IEnumerable<Karaoke_project.Models.BillDetail>)
+                                            {
+                                                @if (item.Id == bi.IdFood)
+                                                {
+
+                                                    <tr id="tr-@item.Id" data-latitude="@item.Id" data-longitude="@bi.Quantity" data-foodName="@item.Name">
+                                                        <td>@item.Name</td>
+                                                        <td>@item.Price</td>
+                                                        <td>@bi.Quantity<input type="hidden" id="quan-@item.Id" value="@bi.Quantity"> </td>
+                                                        @{double? thanh = @item.Price * @bi.Quantity;}
+                                                        <td>@String.Format("{0:0,0}", @thanh) </td>
+                                                    </tr>
+                                                }
+                                            }
                                         }
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row m-t-30 lh-1-8">
-                        <div class="col-sm-12">
-                            <div class="float-right text-right">
-                                <p id="priceRoom">Tiền giờ: 0 VND</p>
-                                <p id="totalFood">Món ăn : 0 VND </p>
-                                <hr>
-                                <h3 id="total-price"><span class="font-weight-semibold text-dark">Total :</span></h3>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row m-t-30 lh-1-8">
+                                <div class="col-sm-12">
+                                    <div class="float-right text-right">
+                                        <p id="priceRoom">Tiền giờ: 0 VND</p>
+                                        <p id="totalFood">Món ăn : 0 VND </p>
+                                        <hr>
+                                        <h3 id="total-price"><span class="font-weight-semibold text-dark">Total :</span></h3>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,8 +135,10 @@
         </div>
     </div>
 </div>
+
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a class="btn btn-primary m-r-5 " asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
 

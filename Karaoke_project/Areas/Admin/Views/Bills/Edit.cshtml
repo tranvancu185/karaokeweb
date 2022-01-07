@@ -20,21 +20,27 @@
         <div class="col-md-7 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <h1 class="text-center">THÊM THÔNG TIN ĐẶT PHÒNG</h1>
+                    <h1 class="text-center">SỬA THÔNG TIN ĐẶT PHÒNG</h1>
                     <div class="table-responsive" style="padding-top: 20px">
-                        <form asp-action="Edit">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" asp-for="Id" />
+                        <form>
+                            <input type="hidden" value="@Model.Id" id="inputIdBill" />
                             <div class="form-group">
-                                <label asp-for="Status" class="control-label"></label>
-                                <input asp-for="Status" class="form-control" />
-                                <span asp-validation-for="Status" class="text-danger"></span>
+                                <select class="custom-select mt-2" id="idStatus" name="idStatus" style="min-width: 200px;">
+                                    @if (Model.Status == 0)
+                                     { <option value="0" selected >Đã thanh toán</option>
+                                      <option value="1">Chưa thanh toán</option>
+                                     }
+                                    else { 
+                                        <option value="0">Đã thanh toán</option> 
+                                        <option value="1" selected>Chưa thanh toán</option>
+                                    }
+                                </select>
                             </div>
                             <button type="button" class="btn btn-primary form-group" id="model-open" data-toggle="modal" data-target="#model-book-food">
                                 Đặt món ăn
                             </button>
                             <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-primary" /> |
+                                <input type="button" value="Save" class="btn btn-success form-group" onclick="submitBook()" /> |
                                 <a asp-action="Index">Back to List</a>
                             </div>
                         </form>
@@ -123,7 +129,7 @@
                                             @foreach(BillDetail bi in ViewData["foodDetail"] as IEnumerable<Karaoke_project.Models.BillDetail>) {
                                                 @if (item.Id == bi.IdFood) {
                                                     
-                                                    <tr>
+                                                    <tr id="tbody-bill-table-foods">
                                                         <td>@item.Name</td>
                                                         <td>@item.Price</td>
                                                         <td>@bi.Quantity </td>
@@ -230,7 +236,7 @@
                                             <tr id="tr-@item.Id" data-latitude="@item.Id" data-longitude="@bi.Quantity" data-foodName="@item.Name">
                                                 <td>@item.Name</td>
                                                 <td>@item.Price</td>
-                                                <td><input id="quan{@item.Id}" type='text' value='@bi.Quantity' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'/></td>
+                                                <td><input id="quan-@item.Id" type='text' value='@bi.Quantity' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'/></td>
                                                 <td><button type='button' onClick='removeRow(@item.Id)' class='btn btn-danger btn-tone'>Xóa</button></td>
                                             </tr>
                                         }
@@ -263,10 +269,10 @@
                 idFood: $(this).data('latitude'),
                 quan: $(this).data('longitude')
             }
-            getFoodByIdNo(data.idFood,data.quan)
+            getFoodByIdNo(data.idFood, data.quan)
             FoodsArray.push(data);
-            console.log(food)
         });
+
 
         $(document).ready(function () {
             $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
@@ -280,7 +286,6 @@
                 async: true,
                 success: (results) => {
                     let data = results.data
-                    console.log(data)
                     $('#room-name-bill').text(data.name)
                     $('#room-price-bill').text(convertVND(data.price) + " / hour")
                     priceRoom = data.price;
@@ -308,7 +313,7 @@
             })
 
             //Function set Total Bill
-            
+
 
             // filter table Food
             $("#myInput").on("keyup", function () {
@@ -405,9 +410,9 @@
                     if (results.status == "Success") {
                         let data = results.data;
                         food.push(data);
-                        let tr = "<tr id='tr" + data.id + "'>" +
+                        let tr = "<tr id='tr" + data.id + "' data-latitude="+data.id+">" +
                             "<td>" + data.name + "</td>" +
-                            "<td>" + data.price + "</td><td><input id='quan" + data.id + "' type='text' value='1' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'></td>" +
+                            "<td>" + data.price + "</td><td><input id='quan-" + data.id + "' type='text' value='1' class='form-control' aria-label='Small' aria-describedby='inputGroup-sizing-sm'></td>" +
                             "<td><button type='button' onClick='removeRow(" + data.id + ")' class='btn btn-danger btn-tone'>Xóa</button></td>" +
                             "</tr >"
                         $('#book-food-detail > tbody:last').append(tr);
@@ -432,79 +437,31 @@
 
         // Function onclick submit form Book
         function submitBook() {
-            var error = "";
-            var nameCus = $("#name-cus").val();
-            var phoneCus = $("#phone-cus").val();
-            var idRoom = $("#id-room :selected").val();
-            var dateBook = $("#date-book").val();
-            var checkIn = $("#timeBook").val()
-            var checkOut = $("#timeEndBook").val()
+            var status = $("#idStatus :selected").val();
+            var idBill = $("#inputIdBill").val();
             totalBill = totalFood + totalRoom
-            date = new Date(dateBook)
-            if (!nameCus) {
-                error = "Thiếu thông tin tên khách hàng!"
-                alertify.notify(error, "error", 7)
-                return;
-            }
-
-            // validate phone number VietNam
-            if (validatePhone(phoneCus) != "") {
-                error = validatePhone(phoneCus);
-                alertify.notify(error, "error", 7)
-                return;
-            }
-
-            // validate date book
-            if (+date <= +today.getDate()-1) {
-                error = "Ngày đặt không hợp lệ!"
-                alertify.notify(error, "error", 7)
-                return;
-            }
-
-            // validate start time < end time
-            var stt = new Date("November 13, 2013 " + checkIn);
-            stt = stt.getTime();
-            var endt = new Date("November 13, 2013 " + checkOut);
-            endt = endt.getTime();
-            if (stt > endt) {
-                error = "Giờ bắt đầu phải nhỏ hơn giờ kết thúc!"
-                alertify.notify(error, "error", 7)
-                return;
-            }
-
-            if (!idRoom) {
-                error = "Vui lòng nhập thống tin phòng đặt!"
-                alertify.notify(error, "error", 7)
-                return;
-            }
-
             // Data
-            var cus = {
-                nameCus : nameCus,
-                phoneCus: phoneCus,
-                idRoom : idRoom,
-                dateBook: dateBook,
-                checkIn: checkIn,
-                checkOut: checkOut,
+            var data = {
+                idBill: idBill,
+                status: status,
                 foodBook: food,
                 totalBook: totalBill
             };
-            addCus(cus);
+            addCus(data);
         }
 
         // Function send data to BE to book
-        function addCus(cus) {
+        function addCus(data) {
             $.ajax({
-                url: '/Admin/Home/AddCus',
+                url: '/Admin/Bills/Edit',
                 dataType: "json",
                 contentType: "application/json",
                 type: "POST",
                 data: JSON.stringify({
-                    cus: cus
+                    cus: data
                 }),
                 async: true,
                 success: (results) => {
-                    console.log(results)
                     if (results.status == 'Failed') {
                         alertify.notify(results.message, "error", 7)
                     }
@@ -520,11 +477,12 @@
 
         // Function book food
         function submitFood() {
-            console.log(food)
+            
             totalFood = 0;
             $("#table-bill > tbody").empty();
+
             food.forEach((foo) => {
-                let idTr = $("input#quan" + foo.id).val();
+                let idTr = $("input#quan-" + foo.id).val();
                 if (idTr) {
                     foo.quanBook = idTr;
                 }
@@ -535,18 +493,17 @@
                     "</tr >"
                 $('#table-bill > tbody:last').append(tr);
                 totalFood += (foo.price * foo.quanBook);
-                console.log(totalFood)
             })
+            console.log(food)
             $('#totalFood').text("Tiền thực đơn: " + convertVND(totalFood))
             totalBill = totalFood + totalRoom
             $("#total-price").text(convertVND(totalBill))
             totalBillSet()
-            
+
         }
 
         // Function remove row in table book food
         function removeRow(id) {
-            console.log(id)
             $('#tr' + id).remove();
             $('#tr-' + id).remove();
             $("#btn" + id).removeAttr('disabled');
@@ -579,7 +536,6 @@
                 success: (results) => {
                     if (results.status == "Success") {
                         let data = results.data.$values;
-                        console.log(results)
                         if (data.length == 0 || data == null) {
                             error = "Không có phòng trống!"
                             alertify.notify(error, "error", 7)
@@ -599,7 +555,6 @@
                         error = "Không tìm được phòng!"
                         alertify.notify(error, "error", 7)
                     }
-                    console.log(results)
                 },
                 error: (xhr) => {
                     alert("Error");
