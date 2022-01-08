@@ -27,9 +27,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Customers
-        [Route("list-customer.html", Name = "ListCus")]
+        [Route("ListCustomer", Name = "ListCus")]
         public async Task<IActionResult> Index()
         {
+            // Check user logged in
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
@@ -41,18 +42,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
             List<Customer> list = _context.Customers.ToList();
-            
             return View(list);
         }
 
         // GET: Admin/Customers/Details/5
-        [Route("chi-tiet-customer.html", Name = "DetailCus")]
+        [Route("DetailCustomer", Name = "DetailCus")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Check User logged in
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
@@ -63,13 +60,17 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
+            // return detail view
+            if (id == null)
+            {
+                return NotFound();
+            }
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
                 return NotFound();
             }
-
             return View(customer);
         }
 
@@ -111,10 +112,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // GET: Admin/Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Check User logged in
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
@@ -125,6 +123,11 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
+            // return edit customers view
+            if (id == null)
+            {
+                return NotFound();
+            }
             var customer = await _context.Customers.FindAsync(id);
             _notyfService.Success("Sửa thông tin khách hàng thành công!");
             if (customer == null)
@@ -171,10 +174,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // GET: Admin/Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Check user logged in
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
@@ -185,13 +185,17 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
+            // return view delete customer
+            if (id == null)
+            {
+                return NotFound();
+            }
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
             {
                 return NotFound();
             }
-            
             return View(customer);
         }
 

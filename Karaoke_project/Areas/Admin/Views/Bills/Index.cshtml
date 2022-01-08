@@ -87,7 +87,7 @@
                                 @String.Format("{0:0,0}", item.Total) VND
                             </td>
                             <td>
-                                @if (item.Status == 0)
+                                @if (item.Status != 0)
                                 {
                                     <div class="d-flex align-items-center">
                                         <div class="badge badge-success badge-dot m-r-10"></div>
@@ -142,6 +142,7 @@
             $("#end-date").val(convert(lastDay));
 
             jQuery("#end-date").change(() => {
+                $("#rowBill").empty();
                 searchBillStartEnd()
             })
             jQuery("#start-date").change(() => {
@@ -153,7 +154,7 @@
         function searchBillStartEnd() {
             var startDate = $("#start-date").val();
             var endDate = $("#end-date").val();
-            $("#rowBill").empty();
+            
             $.ajax({
                 url: '/Admin/Bills/getBillStartEnd',
                 dataType: "json",
@@ -169,6 +170,9 @@
                         alertify.notify(results.message, "error", 7)
                     } else {
                         let data = results.data.$values
+                        console.log(data)
+                        console.log(billArray);
+                        
                         billArray.forEach((b) => {
                             data.forEach((e) => {
                                 if (b.id == e.id) {
@@ -179,23 +183,21 @@
                                     let totalPrice = convertVND(e.total)
                                     let nameCus = b.customer
                                     let nameRoom = b.room
-                                    let tr =
-                                        "<tr>" +
-                                            "<td>" + createAt + "</td>" +
-                                            "<td>" + dateBook + "</td>" +
-                                            "<td>" + checkIn + "</td>" +
-                                            "<td>" + checkOut + "</td>" +
-                                            "<td>" + totalPrice + "</td>"+
-                                            "<td>" + statusChange(e.status) + "</td>" +
-                                            "<td>" + nameCus + "</td>" +
-                                            "<td>" + nameRoom + "</td>" +
-                                            "<td>" +
-                                                "<a class='btn btn-success btn-tone m-r-5' asp-action='Details' asp-route-id='" + e.id + "'>Details</a> |" +
-                                                "<a class='btn btn-primary btn-tone m-r-5' asp-action='Edit' asp-route-id='" + e.id + "'>Edit</a> |" +
-                                                "<a class='btn btn-danger btn-tone m-r-5' asp-action='Delete' asp-route-id='" + e.id + "'>Delete</a> |"+
-                                            "</td>" +
-                                        "</tr> "
-                                    console.log(tr)
+                                    let tr ="<tr>"
+                                        tr +="<td>" + createAt + "</td>" 
+                                        tr +="<td>" + dateBook + "</td>" 
+                                        tr +="<td>" + checkIn + "</td>" 
+                                        tr +="<td>" + checkOut + "</td>" 
+                                        tr +="<td>" + totalPrice + "</td>"
+                                        tr +="<td>" + statusChange(e.status) + "</td>" 
+                                        tr +="<td>" + nameCus + "</td>" 
+                                        tr +="<td>" + nameRoom + "</td>" 
+                                        tr +="<td>" 
+                                        tr += "<a class='btn btn-success btn-tone m-r-5' href='/Admin/Bills/Details/" + e.id + "'>Details</a> |"
+                                        tr +="<a class='btn btn-primary btn-tone m-r-5' href='/Admin/Bills/Edit/" + e.id + "'>Edit</a> |"
+                                        tr +="<a class='btn btn-danger btn-tone m-r-5' href='/Admin/Bills/Delete/" + e.id + "'>Delete</a> |"
+                                        tr +="</td>" 
+                                        tr +="</tr> "
                                     $('#listBill > tbody:last').append(tr);
                                 }
                             })

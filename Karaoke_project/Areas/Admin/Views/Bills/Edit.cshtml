@@ -26,13 +26,13 @@
                             <input type="hidden" value="@Model.Id" id="inputIdBill" />
                             <div class="form-group">
                                 <select class="custom-select mt-2" id="idStatus" name="idStatus" style="min-width: 200px;">
-                                    @if (Model.Status == 0)
-                                     { <option value="0" selected >Đã thanh toán</option>
-                                      <option value="1">Chưa thanh toán</option>
+                                    @if (Model.Status != 0)
+                                     { <option value="1" selected >Đã thanh toán</option>
+                                      <option value="0">Chưa thanh toán</option>
                                      }
                                     else { 
-                                        <option value="0">Đã thanh toán</option> 
-                                        <option value="1" selected>Chưa thanh toán</option>
+                                        <option value="1">Đã thanh toán</option> 
+                                        <option value="0" selected>Chưa thanh toán</option>
                                     }
                                 </select>
                             </div>

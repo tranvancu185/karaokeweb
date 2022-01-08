@@ -26,7 +26,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms
-        [Route("list-phong.html", Name = "ListRoom")]
+        [Route("ListRoom", Name = "ListRoom")]
         public async Task<IActionResult> Index()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -43,7 +43,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms/Details/5
-        [Route("chi-tiet-phong.html", Name = "DetailRoom")]
+        [Route("DetailRoom", Name = "DetailRoom")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -109,6 +109,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms/Edit/5
+        [Route("EditRoom", Name = "EditRoom")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -138,6 +139,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("EditRoom", Name = "EditRoom")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Status,Price,TypeRoom")] Room room)
         {
             if (id != room.Id)
@@ -179,6 +181,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms/Delete/5
+        [Route("DelRoom", Name = "DelRoom")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -207,6 +210,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // POST: Admin/Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("DelRoom", Name = "DelRoom")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var room = await _context.Rooms.FindAsync(id);

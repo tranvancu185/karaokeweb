@@ -31,7 +31,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             this._hostEnvironment = hostEnviroment;
         }
         [AllowAnonymous]
-        [Route("dasboard", Name = "Dasboard")]
+        [Route("Dasboard", Name = "Dasboard")]
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetString("UserId");
@@ -46,7 +46,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserId"] = signed.Id;
             return View();
         }
-        [Route("dat-phong.html", Name = "BookPhong")]
+        [Route("Book", Name = "BookPhong")]
         public IActionResult Book()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -77,7 +77,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 foodList = dao.getListFoodByCat(RoleID);
             }
-
             return Json(new { status = "Success", data = foodList });
         }
 
@@ -127,7 +126,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             cus.Phone = data.phoneCus;
             await this.checkCus(cus);
             CustomersService dao = new CustomersService(_context);
-
             // Insert Bill
             Customer CusExist = dao.getCustomerByPhone((string)cus.Phone);
             Bill bill = new Bill();
@@ -145,7 +143,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 _context.Add(bill);
                 _context.SaveChanges();
                 // Insert Bill Detail
-
                 Bill BillExist = billServices.getBillByCreateAt(bill.CreateAt);
                 if (BillExist.Id == 0)
                 {
@@ -170,7 +167,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return Json(new { status = "Failed", message = "Phòng đã được book vào khung giờ này, vui lòng chọn khung giờ khác!" });
             }
-            
         }
         public async Task checkCus(Customer cus)
         {
@@ -196,7 +192,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
-
         }
     }
 }

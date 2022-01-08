@@ -26,7 +26,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Roles
-        [Route("list-phan-quyen.html", Name = "ListRole")]
+        [Route("ListRole", Name = "ListRole")]
         public async Task<IActionResult> Index()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -43,7 +43,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Roles/Details/5
-        [Route("chi-tiet-phan-quyen.html", Name = "DetailRole")]
+        [Route("DetailRole", Name = "DetailRole")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

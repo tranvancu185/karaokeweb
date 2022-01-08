@@ -33,18 +33,25 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers
-        [Route("list-User.html", Name = "ListUser")]
+        [Route("listUser", Name = "ListUser")]
         public IActionResult Index(int page=1, int RoleID =0)
         {
+            // Check User Logged in 
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
             }
+            // Get User Logged in
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
             var pageNumber = page;
             var pageSize = 20;
+            // Get list User
             List<User> web_karaokeContext = new List<User>();
-
             if(RoleID != 0)
             {
                 web_karaokeContext = _context.Users.AsNoTracking().Where(x => x.Role == RoleID).Include(f => f.RoleNavigation).OrderByDescending(x => x.Id).ToList();
@@ -53,20 +60,17 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 web_karaokeContext = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).OrderByDescending(x => x.Id).ToList();
             }
-
+            // Pagination
             PagedList<User> pagedList = new PagedList<User>(web_karaokeContext.AsQueryable(), pageNumber, pageSize);
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name");
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CurrentRoleID = RoleID;
-
-            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
-            ViewData["UserAvatar"] = signed.Avatar;
-            ViewData["UserRole"] = signed.Role;
-            ViewData["UserName"] = signed.Hoten;
-            ViewData["UserId"] = signed.Id;
             return View(pagedList);
         }
 
+        // Filter by Role 
+        // @params Role ID
+        // @output Json object User
         public IActionResult Fillter(int RoleID = 0 )
         {
             var url = $"/Admin/AdminUsers?RoleID={RoleID}";
@@ -78,24 +82,27 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Details/5
-        [Route("chi-tiet-User.html", Name = "DetailUser")]
+        [Route("DetailUser", Name = "DetailUser")]
         public async Task<IActionResult> Details(string id)
         {
+            // Check User Logged in
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
             }
+            // Get User Logged in
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
+            // Validate params
             if (id == null)
             {
                 return NotFound();
             }
-
+            // Get user by id
             var user = await _context.Users
                 .Include(f => f.RoleNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -103,11 +110,11 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
             return View(user);
         }
 
         // GET: Admin/AdminUsers/Create
+        [Route("CreateUser", Name = "CreateUser")]
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -115,6 +122,8 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
             }
+
+            // Get User signed 
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
@@ -129,10 +138,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("CreateUser", Name = "CreateUser")]
         public async Task<IActionResult> Create([Bind("Id,Hoten,Role,Username,Password,ImageFile")] User user)
         {
             if (ModelState.IsValid)
             {
+                // Check User existed
                 User userExist = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id || x.Username == user.Username);
                 if(userExist != null)
                 {
@@ -149,6 +160,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 }
                 else
                 {
+                    // Set image avatar User
                     if (user.ImageFile != null)
                     {
                         string wwwRootPath = _hostEnvironment.WebRootPath;
@@ -165,7 +177,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
                     {
                         user.Avatar = "thumb-1.jpg";
                     }
-
+                    // Add User
                     _context.Add(user);
                     await _context.SaveChangesAsync();
                     _context.ChangeTracker.Clear();
@@ -174,7 +186,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
                 }
             }
             ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
-
+            // Get User signed 
             userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
@@ -185,19 +197,10 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Edit/5
+        [Route("EditUser", Name = "EditUser")]
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
+            // Get User logged In
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
@@ -208,6 +211,18 @@ namespace Karaoke_project.Areas.Admin.Controllers
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
+            // Validate id User
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            // Create select list Role 
+            ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
             return View(user);
         }
 
@@ -216,21 +231,21 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("EditUser", Name = "EditUser")]
         public async Task<IActionResult> Edit(string id, User user)
         {
-
-            ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
+            // Check User logged in
             userId = HttpContext.Session.GetString("UserId");
             User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
             ViewData["UserAvatar"] = signed.Avatar;
             ViewData["UserRole"] = signed.Role;
             ViewData["UserName"] = signed.Hoten;
             ViewData["UserId"] = signed.Id;
+            //Set data default User
             User imageModel = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
             user.Username = imageModel.Username;
             user.Password = imageModel.Password;
-
+            //Check role user logged in and update data User
             if (signed.Role != 1)
             {
                 user.Hoten = imageModel.Hoten;
@@ -244,6 +259,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
             }
             else
             {
+                //delete image
+                var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image/avatar", imageModel.Avatar);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
                 string wwwRootPath = _hostEnvironment.WebRootPath;
                 string fileName = Path.GetFileNameWithoutExtension(user.ImageFile.FileName);
                 string extension = Path.GetExtension(user.ImageFile.FileName);
@@ -258,20 +279,29 @@ namespace Karaoke_project.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
             _context.ChangeTracker.Clear();
             _notyfService.Success("Cập nhật thành công!");
+            ViewData["Role"] = new SelectList(_context.Roles, "Id", "Name", user.Role);
             return View(user);
         }
 
         // GET: Admin/AdminUsers/Delete/5
+        [Route("DeleteUser", Name = "DeleteUser")]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Check user logged in
             userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
                 return RedirectToAction("Login", "Home", new { area = "" });
+            }
+            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
+            ViewData["UserAvatar"] = signed.Avatar;
+            ViewData["UserRole"] = signed.Role;
+            ViewData["UserName"] = signed.Hoten;
+            ViewData["UserId"] = signed.Id;
+            // Validate param id
+            if (id == null)
+            {
+                return NotFound();
             }
             var user = await _context.Users
                 .Include(f => f.RoleNavigation)
@@ -280,18 +310,13 @@ namespace Karaoke_project.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            
-            User signed = _context.Users.AsNoTracking().Include(f => f.RoleNavigation).FirstOrDefault(x => x.Id == userId);
-            ViewData["UserAvatar"] = signed.Avatar;
-            ViewData["UserRole"] = signed.Role;
-            ViewData["UserName"] = signed.Hoten;
-            ViewData["UserId"] = signed.Id;
             return View(user);
         }
 
         // POST: Admin/AdminUsers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("DeleteUser", Name = "DeleteUser")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var imageModel = await _context.Users.FindAsync(id);
@@ -307,18 +332,5 @@ namespace Karaoke_project.Areas.Admin.Controllers
             _notyfService.Success("Xóa thành công!");
             return RedirectToAction(nameof(Index));
         }
-
-        private bool UserExists(string id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
-
-        public async Task<User> GetValue(string id)
-        {
-            User User = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            return User;
-        }
-    }
-
-    
+    } 
 }

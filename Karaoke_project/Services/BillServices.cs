@@ -50,7 +50,7 @@ namespace Karaoke_project.Services
 
         public List<Bill> getBillStartEnd(DateTime? startDate, DateTime? endDate)
         {
-            List<Bill> billList = _context.Bills.OrderByDescending(x => x.Id).Include(b => b.IdCusNavigation).Include(b => b.IdRoomNavigation).Where(x => x.DateBook <= endDate && x.DateBook >= startDate).ToList();
+            List<Bill> billList = _context.Bills.OrderByDescending(x => x.Id).Where(x => x.DateBook <= endDate && x.DateBook >= startDate).ToList();
 
             return billList;
         }
