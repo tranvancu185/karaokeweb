@@ -9,20 +9,34 @@
 html {
     scroll-behavior: smooth;
 }
-nav {
-    text-transform: uppercase;
-}
+
 #icon {
     border-radius: 50%;
     width: 50px;
 }
 
 body {
-    background: #D3CCE3; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #E9E4F0, #D3CCE3); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #E9E4F0, #D3CCE3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #000428; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #004e92, #000428); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(30deg, #004e92, #000428); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
+p b{
+    color: white;
+}
+#a {
+    color: white;
+}
+nav {
+    background: #F0F2F0; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #000C40, #F0F2F0); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    text-transform: uppercase;
+}
+a:hover {
+    color: red !important;
+}
 .__content {
     font-size: 1.75rem;
 }
@@ -57,3 +71,19 @@ body {
     object-fit: contain;
 }
 
+#aboutus {
+    min-height: 80vh;
+    background-color: white;
+    border-radius: 25px;
+    opacity: 1;
+}
+#aboutus:hover {
+    min-height: 80vh;
+    background: #FC5C7D; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #6A82FB, #FC5C7D); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #6A82FB, #FC5C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    border-radius: 25px;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: 2s;
+}

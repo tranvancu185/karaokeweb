@@ -37,15 +37,15 @@
             <img src="~/image/image1.jpg" class="d-block w-100" alt="">
         </div>
         <div class="col-xl-6 col-md-6 col-sm-12 align-self-center">
-            <p> <b>Loại phòng: </b>Phòng Vip</p>
-            <p> <b>Giá phòng: </b>65.000 VND / giờ</p>
+            <p> <b>Loại phòng: </b><span id="a">Phòng Vip</span></p>
+            <p> <b>Giá phòng: </b><span id="a">65.000 VND / giờ</span></p>
         </div>
     </div>
 
     <div class="row mt-5">
         <div class="col-xl-6 col-md-6 col-sm-12 align-self-center">
-            <p> <b>Loại phòng: </b>Phòng cao cấp </p>
-            <p> <b>Giá phòng: </b>55.000 VND / giờ </p>
+            <p> <b>Loại phòng: </b><span id="a">Phòng cao cấp</span> </p>
+            <p> <b>Giá phòng: </b><span id="a">55.000 VND / giờ</span> </p>
         </div>
         <div class="col-xl-6 col-md-6 col-sm-12">
             <img src="~/image/image2.jpg" class="d-block w-100" alt="">
@@ -57,8 +57,8 @@
             <img src="~/image/image1.jpg" class="d-block w-100" alt="">
         </div>
         <div class="col-xl-6 col-md-6 col-sm-12 align-self-center">
-            <p> <b>Loại phòng: </b>Phòng Thường  </p>
-            <p> <b>Giá phòng: </b>45.000 VND / giờ </p>
+            <p> <b>Loại phòng: </b><span id="a">Phòng Thường </span> </p>
+            <p> <b>Giá phòng: </b><span id="a">45.000 VND / giờ </span></p>
         </div>
     </div>
 
@@ -66,7 +66,7 @@
 <!--Menu-->
 <div id="menu" class="container">
     <div class="row mt-3">
-        <h3 class="mx-3 my-3">Thực đơn</h3>
+        <h3 class="mx-3 my-3 text-white">Thực đơn</h3>
         @foreach (Food foo in ViewData["foods"] as IEnumerable<Karaoke_project.Models.Food>)
         {
             <div class="col-xl-3 col-md-6 col-sm-12">
