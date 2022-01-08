@@ -213,7 +213,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Bills/Delete/5
-
         public async Task<IActionResult> Delete(int? id)
         {
             // Check user logged in

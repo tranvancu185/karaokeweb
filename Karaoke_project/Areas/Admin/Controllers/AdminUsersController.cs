@@ -114,7 +114,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Create
-        [Route("CreateUser", Name = "CreateUser")]
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -138,7 +137,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("CreateUser", Name = "CreateUser")]
         public async Task<IActionResult> Create([Bind("Id,Hoten,Role,Username,Password,ImageFile")] User user)
         {
             if (ModelState.IsValid)
@@ -197,7 +195,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Edit/5
-        [Route("EditUser", Name = "EditUser")]
         public async Task<IActionResult> Edit(string id)
         {
             // Get User logged In
@@ -231,7 +228,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("EditUser", Name = "EditUser")]
         public async Task<IActionResult> Edit(string id, User user)
         {
             // Check User logged in
@@ -284,7 +280,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Delete/5
-        [Route("DeleteUser", Name = "DeleteUser")]
         public async Task<IActionResult> Delete(string id)
         {
             // Check user logged in
@@ -316,7 +311,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // POST: Admin/AdminUsers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Route("DeleteUser", Name = "DeleteUser")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var imageModel = await _context.Users.FindAsync(id);

@@ -109,7 +109,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms/Edit/5
-        [Route("EditRoom", Name = "EditRoom")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -139,22 +138,19 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("EditRoom", Name = "EditRoom")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Status,Price,TypeRoom")] Room room)
+        public  IActionResult Edit(int id, [Bind("Id,Name,Status,Price,TypeRoom")] Room room)
         {
             if (id != room.Id)
             {
                 _notyfService.Error("Cập nhật thất bại!");
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-
                     _context.Update(room);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     _notyfService.Success("Cập nhật mới thành công!");
                 }
                 catch (DbUpdateConcurrencyException)
@@ -181,7 +177,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Rooms/Delete/5
-        [Route("DelRoom", Name = "DelRoom")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -210,9 +205,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // POST: Admin/Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Route("DelRoom", Name = "DelRoom")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            List<Bill> exists = _context.Bills.Where(x => x.IdRoom == id).ToList();
+            if(exists.Count > 0)
+            {
+                _notyfService.Error("Không thể xóa do tồn tại hóa đơn!");
+                return RedirectToAction(nameof(Index));
+            }
             var room = await _context.Rooms.FindAsync(id);
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();

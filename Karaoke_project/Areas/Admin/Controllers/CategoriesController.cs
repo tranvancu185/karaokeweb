@@ -26,7 +26,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Categories
-        [Route("listCategories", Name = "ListKho")]
+        [Route("listCategories", Name = "listCategories")]
         public async Task<IActionResult> Index()
         {
             // Check User logged in
@@ -44,7 +44,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Categories/Details/5
-        [Route("DetailCategories", Name = "DetailKho")]
+        [Route("DetailCategories", Name = "DetailCategories")]
         public async Task<IActionResult> Details(int? id)
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -72,7 +72,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Categories/Create
-        [Route("CreateCategories", Name = "CreateCategories")]
         public IActionResult Create()
         {
             userId = HttpContext.Session.GetString("UserId");
@@ -93,7 +92,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("CreateCategories", Name = "CreateCategories")]
         public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
             if (ModelState.IsValid)
@@ -113,7 +111,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Categories/Edit/5
-        [Route("EditCategories", Name = "EditCategories")]
         public async Task<IActionResult> Edit(int? id)
         {
             // Check Userr logged in
@@ -144,7 +141,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("EditCategories", Name = "EditCategories")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
         {
             // Check User logged in
@@ -190,7 +186,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Categories/Delete/5
-        [Route("DelCategories", Name = "DelCategories")]
         public async Task<IActionResult> Delete(int? id)
         {
             // Check user logged id
@@ -221,9 +216,14 @@ namespace Karaoke_project.Areas.Admin.Controllers
         // POST: Admin/Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Route("DelCategories", Name = "DelCategories")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            List<Food> exists = _context.Foods.Where(x => x.IdCategory == id).ToList();
+            if (exists.Count > 0)
+            {
+                _notyfService.Error("Không thể xóa do tồn tại thực đơn!");
+                return RedirectToAction(nameof(Index));
+            }
             var category = await _context.Categories.FindAsync(id);
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();

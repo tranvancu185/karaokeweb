@@ -27,7 +27,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Customers
-        [Route("ListCustomer", Name = "ListCus")]
+        [Route("ListCustomer", Name = "ListCustomer")]
         public async Task<IActionResult> Index()
         {
             // Check user logged in
@@ -46,7 +46,7 @@ namespace Karaoke_project.Areas.Admin.Controllers
         }
 
         // GET: Admin/Customers/Details/5
-        [Route("DetailCustomer", Name = "DetailCus")]
+        [Route("DetailCustomer", Name = "DetailCustomer")]
         public async Task<IActionResult> Details(int? id)
         {
             // Check User logged in
@@ -204,6 +204,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            List<Bill> exists = _context.Bills.Where(x => x.IdCus == id).ToList();
+            if (exists.Count > 0)
+            {
+                _notyfService.Error("Không thể xóa do tồn tại hóa đơn!");
+                return RedirectToAction(nameof(Index));
+            }
             var customer = await _context.Customers.FindAsync(id);
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();

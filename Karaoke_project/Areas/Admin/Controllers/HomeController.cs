@@ -182,12 +182,6 @@ namespace Karaoke_project.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult BookFood()
-        {
-            ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
-            return View();
-        }
-
         public ActionResult Logout()
         {
             HttpContext.Session.Clear();

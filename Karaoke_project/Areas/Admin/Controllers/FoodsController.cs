@@ -293,6 +293,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            List<BillDetail> exists = _context.BillDetails.Where(x => x.IdFood == id).ToList();
+            if (exists.Count > 0)
+            {
+                _notyfService.Error("Không thể xóa do tồn tại hóa đơn!");
+                return RedirectToAction(nameof(Index));
+            }
             var imageModel = await _context.Foods.FindAsync(id);
             //delete image
             var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image/imageFood", imageModel.Image);

@@ -207,6 +207,12 @@ namespace Karaoke_project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            List<User> exists = _context.Users.Where(x => x.Role == id).ToList();
+            if (exists.Count > 0)
+            {
+                _notyfService.Error("Không thể xóa do tồn tại user!");
+                return RedirectToAction(nameof(Index));
+            }
             var role = await _context.Roles.FindAsync(id);
             _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
