@@ -4,9 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Karaoke</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="~/js/lightslider.js"></script>
     <!-- Alertify CDN -->
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
@@ -15,7 +17,7 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="~/AdminAssets/images/logo/favicon.png">
+    <link rel="shortcut icon" href="https://th.bing.com/th/id/R.57c9cd52cdc5fd3cd1e3949d42912f21?rik=YWveODCOpBcWZQ&riu=http%3a%2f%2fblog.vso-software.fr%2fwp-content%2fuploads%2f2016%2f11%2fSnap7322.jpg&ehk=sZoqzn4pKogiwss1pvYByYi%2bSKjbnrPiBcx7b8a%2fEkA%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1">
 
     <!-- page css -->
     <link href="~/AdminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
@@ -24,21 +26,19 @@
     <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
     <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <link rel="stylesheet" href="~/css/styles.css">
     <link href="~/css/lightslider.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.js"
-            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-            crossorigin="anonymous"></script>
-    <script src="~/js/lightslider.js"></script>
+
+
     <!-- Core css -->
     <link href="~/AdminAssets/css/app.min.css" rel="stylesheet">
     <link href="~/AdminAssets/css/styles.css" rel="stylesheet">
 </head>
 <body>
-    <header>
+    <header class="sticky-top">
         <!--Navbar-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container d-flex">
                 <a class="navbar-brand"  asp-area="" asp-controller="Home" asp-action="Index">
                     <img id="icon" src="https://th.bing.com/th/id/R.57c9cd52cdc5fd3cd1e3949d42912f21?rik=YWveODCOpBcWZQ&riu=http%3a%2f%2fblog.vso-software.fr%2fwp-content%2fuploads%2f2016%2f11%2fSnap7322.jpg&ehk=sZoqzn4pKogiwss1pvYByYi%2bSKjbnrPiBcx7b8a%2fEkA%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1" alt="">
@@ -72,7 +72,7 @@
         </nav>
         <!--End Navbar-->
     </header>
-    <div class="container ">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

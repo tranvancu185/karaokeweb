@@ -52,7 +52,7 @@ namespace Karaoke_project.Controllers
             return View();
         }
         
-        [Route("abou-us.html", Name = "AboutUs")]
+        //[Route("abou-us.html", Name = "AboutUs")]
         public IActionResult AboutUs()
         {
             return View();
