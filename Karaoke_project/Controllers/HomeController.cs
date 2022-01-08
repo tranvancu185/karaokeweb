@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -41,8 +42,18 @@ namespace Karaoke_project.Controllers
             }
             return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
-
+        
         public IActionResult Index()
+        {
+            List<Room> rooms = _context.Rooms.OrderBy(a => a.Id).ToList();
+            List<Food> foods = _context.Foods.OrderBy(a => a.Id).ToList();
+            ViewData["foods"] = foods;
+            ViewData["rooms"] = rooms;
+            return View();
+        }
+        
+        [Route("abou-us.html", Name = "AboutUs")]
+        public IActionResult AboutUs()
         {
             return View();
         }
@@ -112,5 +123,15 @@ namespace Karaoke_project.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [Route("dat-phong-client.html", Name = "BookPhongClient")]
+        public IActionResult ClientBooks()
+        {
+            
+            ViewData["Cat"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["Room"] = new SelectList(_context.Rooms, "Id", "Name");
+            return View();
+        }
+
     }
 }

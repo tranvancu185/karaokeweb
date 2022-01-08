@@ -40,7 +40,7 @@
         <!--Navbar-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
             <div class="container d-flex">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand"  asp-area="" asp-controller="Home" asp-action="Index">
                     <img id="icon" src="https://th.bing.com/th/id/R.57c9cd52cdc5fd3cd1e3949d42912f21?rik=YWveODCOpBcWZQ&riu=http%3a%2f%2fblog.vso-software.fr%2fwp-content%2fuploads%2f2016%2f11%2fSnap7322.jpg&ehk=sZoqzn4pKogiwss1pvYByYi%2bSKjbnrPiBcx7b8a%2fEkA%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1" alt="">
                     <span class="mx-3 mt-5"><b>KING KARAOKE</b></span>
                 </a>
@@ -51,19 +51,19 @@
                     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-right">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                                <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="About.html">Về chúng tôi</a>
+                                <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="AboutUs">Về chúng tôi</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="#menu">Thực đơn</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#price">Bảng giá</a>
+                                <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Admin">Admin</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Admin">Bảng giá</a>
+                                <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="ClientBooks">Đặt bàn</a>
                             </li>
                         </ul>
                     </div>
@@ -72,7 +72,7 @@
         </nav>
         <!--End Navbar-->
     </header>
-    <div class="container">
+    <div class="container ">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

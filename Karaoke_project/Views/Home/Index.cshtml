@@ -36,110 +36,48 @@
             <img src="~/image/image1.jpg" class="d-block w-100" alt="">
         </div>
         <div class="col-xl-6 col-md-6 col-sm-12 align-self-center">
-            <p> <b>Phòng</b> </p>
-            <p> <b>Loại phòng</b> </p>
-            <p> <b>Giá phòng</b> </p>
-            <input type="button" class="btn btn-success" value="Xem phòng">
-            <a href="BookingClient.html" class="btn btn-primary">Đặt phòng</a>
-
+            <p> <b>Loại phòng: Phòng Vip</b>  </p>
+            <p> <b>Giá phòng: 65.000 VND / giờ</b> </p>
         </div>
     </div>
 
     <div class="row mt-5">
         <div class="col-xl-6 col-md-6 col-sm-12 align-self-center">
-            <p> <b>Phòng</b> </p>
-            <p> <b>Loại phòng</b> </p>
-            <p> <b>Giá phòng</b> </p>
-            <input type="button" class="btn btn-success" value="Xem phòng">
-            <input type="button" class="btn btn-primary" value="Đặt phòng">
+            <p> <b>Loại phòng: Phòng cao cấp</b> </p>
+            <p> <b>Giá phòng: 55.000 VND / giờ</b> </p>
         </div>
         <div class="col-xl-6 col-md-6 col-sm-12">
             <img src="~/image/image2.jpg" class="d-block w-100" alt="">
         </div>
     </div>
 
+    <div class="row mt-5">
+        <div class="col-xl-6 col-md-6 col-sm-12">
+            <img src="~/image/image1.jpg" class="d-block w-100" alt="">
+        </div>
+        <div class="col-xl-6 col-md-6 col-sm-12 align-self-center">
+            <p> <b>Loại phòng: Phòng Thường</b>  </p>
+            <p> <b>Giá phòng: 45.000 VND / giờ</b> </p>
+        </div>
+    </div>
+
 </div>
-
-
 <!--Menu-->
 <div id="menu" class="container">
     <div class="row mt-3">
         <h3 class="mx-3 my-3">Thực đơn</h3>
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card mb-3">
-                <img src="~/image/image3.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        @foreach (Food foo in ViewData["foods"] as IEnumerable<Karaoke_project.Models.Food>)
+        {
+            <div class="col-xl-3 col-md-6 col-sm-12">
+                <div class="card mb-3">
+                    <img src="~/image/imageFood/@foo.Image" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@foo.Name</h5>
+                        <p class="card-text">@String.Format("{0:0,0}", @foo.Price) VND</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card mb-3">
-                <img src="~/image/image3.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card mb-3">
-                <img src="~/image/image3.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 col-sm-12">
-            <div class="card mb-3">
-                <img src="~/image/image3.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-  </div>
-<!--End Menu-->
-<!--Price Component-->
-<div id="price" class="container">
-    <h3 class="mx-3 my-3">Bảng giá</h3>
-    <div class="row mt-3">
-        <div class="col-md-12 col-sm-12">
-            <table class="table table-striped bg-light">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>twitter</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        }
     </div>
 </div>
 
