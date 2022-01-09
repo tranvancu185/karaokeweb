@@ -28,9 +28,9 @@ p b{
     color: white;
 }
 nav {
-    background: #F0F2F0; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #000C40, #F0F2F0); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #000C40, #F0F2F0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #FFEFBA; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
     text-transform: uppercase;
 }
@@ -70,7 +70,6 @@ a:hover {
     height: 200px;
     object-fit: contain;
 }
-
 #aboutus {
     min-height: 80vh;
     background-color: white;
@@ -79,11 +78,11 @@ a:hover {
 }
 #aboutus:hover {
     min-height: 80vh;
-    background: #FC5C7D; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #6A82FB, #FC5C7D); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #6A82FB, #FC5C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #FFEFBA; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FFFFFF, #FFEFBA); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     border-radius: 25px;
     opacity: 0.8;
     cursor: pointer;
-    transition: 2s;
+    transition: ease-in-out .5s;
 }
